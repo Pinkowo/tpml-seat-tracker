@@ -3,7 +3,12 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Noto Sans TC', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  font-family:
+    'Noto Sans TC',
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
     sans-serif;
   color: var(--tp-color-grey-800, #30383d);
   background-color: var(--tp-color-grey-050, #f5f7f8);
@@ -20,4 +25,26 @@ body {
 
 #root {
   min-height: 100vh;
+}
+
+.map-marker[data-status='available'] {
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.map-marker[data-status='full'] {
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.map-marker[data-status='unknown'] {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(145, 160, 168, 0.25) 0,
+    rgba(145, 160, 168, 0.25) 6px,
+    transparent 6px,
+    transparent 12px
+  );
 }

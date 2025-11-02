@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Map as MapboxMap } from 'mapbox-gl';
 import type { LibraryWithSeat } from '@/types/library';
 import { MarkerLayer } from './MarkerLayer';
+import { captureError } from '@/services/errorLogger';
 
 const DEFAULT_COORDINATE: [number, number] = [121.535404, 25.042233];
 
@@ -47,11 +48,11 @@ export const MapView = ({
         setIsReady(false);
         mapbox.accessToken = accessToken;
         mapInstance = new mapbox.Map({
-        container: mapNode.current,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: userLocation ? [userLocation.lng, userLocation.lat] : DEFAULT_COORDINATE,
-        zoom: 12
-      });
+          container: mapNode.current,
+          style: 'mapbox://styles/mapbox/streets-v12',
+          center: userLocation ? [userLocation.lng, userLocation.lat] : DEFAULT_COORDINATE,
+          zoom: 12
+        });
 
       mapInstance.addControl(new mapbox.NavigationControl(), 'top-right');
 
@@ -63,16 +64,17 @@ export const MapView = ({
 
       mapInstance.on('error', () => {
         if (!isCancelled) {
-          setMapError(
-            '地圖載入失敗，請確認 Mapbox Token 是否有效或網路連線是否正常，重新整理頁面後再試一次。'
-          );
+          const message =
+            '地圖載入失敗，請確認 Mapbox Token 是否有效或網路連線是否正常，重新整理頁面後再試一次。';
+          setMapError(message);
+          captureError(new Error(message), { scope: 'map', accessTokenPresent: Boolean(accessToken) });
         }
       });
 
       mapRef.current = mapInstance;
       } catch (error) {
         if (!isCancelled) {
-          console.error('Mapbox 初始化失敗', error);
+          captureError(error, { scope: 'map-init' });
           setMapError(
             '地圖元件載入失敗，請重新整理頁面或稍後再試。若問題持續，請確認 Mapbox 套件是否安裝完整。'
           );

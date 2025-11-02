@@ -586,7 +586,7 @@
 
 ### 8.1 錯誤監控
 
-- [ ] T097 [P] 在 frontend/src/services/errorLogger.ts 實作前端錯誤日誌服務 in frontend/src/services/errorLogger.ts
+- [x] T097 [P] 在 frontend/src/services/errorLogger.ts 實作前端錯誤日誌服務 in frontend/src/services/errorLogger.ts
   - **整合**: Sentry or custom logger
   - **Capture**:
     - ErrorBoundary errors
@@ -595,13 +595,13 @@
 
 ### 8.2 無障礙支援
 
-- [ ] T098 [P] 在 frontend/src/components/map/ 新增 ARIA labels 到地圖標記與互動元素 in frontend/src/components/map/
+- [x] T098 [P] 在 frontend/src/components/map/ 新增 ARIA labels 到地圖標記與互動元素 in frontend/src/components/map/
   - **ARIA attributes**:
     - aria-label: "圖書館標記：XXX"
     - role: "button"
     - aria-pressed（for selected marker）
 
-- [ ] T099 [P] 在 frontend/src/components/ 新增鍵盤導航支援（Tab 順序，Enter 觸發） in frontend/src/components/
+- [x] T099 [P] 在 frontend/src/components/ 新增鍵盤導航支援（Tab 順序，Enter 觸發） in frontend/src/components/
   - **實作**:
     - 地圖標記可 Tab 聚焦
     - Enter 開啟 modal
@@ -610,7 +610,7 @@
 
 ### 8.3 色盲友善驗證
 
-- [ ] T100 [P] 在 frontend/src/components/map/MarkerLayer.tsx 驗證色盲友善設計（綠/灰/白組合） in frontend/src/components/map/MarkerLayer.tsx
+- [x] T100 [P] 在 frontend/src/components/map/MarkerLayer.tsx 驗證色盲友善設計（綠/灰/白組合） in frontend/src/components/map/MarkerLayer.tsx
   - **驗證工具**: Chrome DevTools 或 色盲模擬器
   - **調整**: 如果綠/黃不易區分，考慮改用形狀差異（圓形 vs 三角形）
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { Map as MapboxMap, Marker as MapboxMarker } from 'mapbox-gl';
 import type { LibraryWithSeat } from '@/types/library';
+import { captureError } from '@/services/errorLogger';
 
 interface MarkerLayerProps {
   map: MapboxMap;
@@ -12,6 +13,7 @@ interface MarkerLayerProps {
 interface MarkerEntry {
   marker: MapboxMarker;
   handleClick: () => void;
+  handleKeyDown: (event: KeyboardEvent) => void;
 }
 
 const MARKER_BASE_CLASS =
@@ -65,9 +67,10 @@ export const MarkerLayer = ({
           return;
         }
 
-        markers.forEach(({ marker, handleClick }) => {
+        markers.forEach(({ marker, handleClick, handleKeyDown }) => {
           const element = marker.getElement();
           element.removeEventListener('click', handleClick);
+          element.removeEventListener('keydown', handleKeyDown);
           marker.remove();
         });
         markers.clear();
@@ -81,6 +84,13 @@ export const MarkerLayer = ({
           element.textContent = `${library.seatStatus?.available_seats ?? '-'}`;
           element.setAttribute('role', 'button');
           element.setAttribute('aria-label', getAriaLabel(library));
+          element.setAttribute('aria-pressed', String(library.id === selectedLibraryId));
+          element.dataset.status = library.seatStatus
+            ? library.seatStatus.available_seats === 0
+              ? 'full'
+              : 'available'
+            : 'unknown';
+          element.tabIndex = 0;
 
           const handleClick = () => {
             onMarkerClick(library.id);
@@ -89,16 +99,24 @@ export const MarkerLayer = ({
             }
           };
 
+          const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              handleClick();
+            }
+          };
+
           element.addEventListener('click', handleClick);
+          element.addEventListener('keydown', handleKeyDown);
 
           const marker = new mapbox.Marker({ element })
             .setLngLat([library.longitude, library.latitude])
             .addTo(map);
 
-          markers.set(library.id, { marker, handleClick });
+          markers.set(library.id, { marker, handleClick, handleKeyDown });
         });
       } catch (error) {
-        console.error('Mapbox 標記載入失敗', error);
+        captureError(error, { scope: 'map-marker' });
       }
     };
 
@@ -106,9 +124,10 @@ export const MarkerLayer = ({
 
     return () => {
       isCancelled = true;
-      markers.forEach(({ marker, handleClick }) => {
+      markers.forEach(({ marker, handleClick, handleKeyDown }) => {
         const element = marker.getElement();
         element.removeEventListener('click', handleClick);
+        element.removeEventListener('keydown', handleKeyDown);
         marker.remove();
       });
       markers.clear();

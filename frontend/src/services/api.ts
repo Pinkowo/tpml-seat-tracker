@@ -1,4 +1,5 @@
 import type { AxiosError, AxiosInstance } from 'axios';
+import { captureError, errorLogger } from '@/services/errorLogger';
 
 let apiClient: AxiosInstance | null = null;
 
@@ -14,17 +15,17 @@ const createApiClient = async (): Promise<AxiosInstance> => {
   });
 
   instance.interceptors.request.use((config) => {
-    console.info(`[API] ${config.method?.toUpperCase()} ${config.url}`);
+    errorLogger.info(`[API] ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   });
 
   instance.interceptors.response.use(
     (response) => {
-      console.info(`[API] Response ${response.status} ${response.config.url}`);
+      errorLogger.info(`[API] Response ${response.status} ${response.config.url}`);
       return response;
     },
     (error: AxiosError | Error) => {
-      console.error('[API] Error response', error);
+      captureError(error, { scope: 'api', url: error instanceof Error ? error.message : undefined });
       const normalizedError =
         error instanceof Error ? error : new Error('API request failed with an unknown error');
       return Promise.reject(normalizedError);

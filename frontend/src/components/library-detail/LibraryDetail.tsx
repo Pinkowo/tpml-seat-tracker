@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import type { LibraryWithSeat } from '@/types/library';
@@ -31,6 +31,9 @@ const getSeatText = (available?: number, total?: number) => {
 export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) => {
   const modalRoot = typeof document === 'undefined' ? null : document.body;
   const predictionsQuery = usePredictions(library?.id ?? null, open);
+  const modalContainerRef = useRef<HTMLDivElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const previouslyFocusedElement = useRef<Element | null>(null);
 
   useEffect(() => {
     if (!open || typeof document === 'undefined') {
@@ -41,15 +44,41 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
       if (event.key === 'Escape') {
         onClose();
       }
+      if (event.key === 'Tab' && modalContainerRef.current) {
+        const focusable = modalContainerRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+
+        if (focusable.length === 0) {
+          event.preventDefault();
+          return;
+        }
+
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        } else if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        }
+      }
     };
 
     document.addEventListener('keydown', handleKeydown);
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    previouslyFocusedElement.current = document.activeElement;
+    closeButtonRef.current?.focus();
 
     return () => {
       document.removeEventListener('keydown', handleKeydown);
       document.body.style.overflow = originalOverflow;
+      if (previouslyFocusedElement.current instanceof HTMLElement) {
+        previouslyFocusedElement.current.focus();
+      }
     };
   }, [open, onClose]);
 
@@ -96,6 +125,7 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
       onClick={onClose}
     >
       <div
+        ref={modalContainerRef}
         className="relative h-[85vh] w-full max-w-lg overflow-hidden rounded-t-3xl bg-white sm:h-auto sm:rounded-3xl"
         onClick={(event) => event.stopPropagation()}
       >
@@ -108,6 +138,7 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
           <button
             type="button"
             onClick={onClose}
+            ref={closeButtonRef}
             className={clsx(
               'absolute left-6 top-6 flex h-11 w-11 items-center justify-center rounded-full backdrop-blur transition focus:outline-none focus-visible:ring-2',
               {
