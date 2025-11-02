@@ -616,15 +616,15 @@
 
 ### 8.4 部署
 
-- [ ] T102 [P] 在 frontend/Dockerfile 建立 frontend 的 Dockerfile，使用 nginx in frontend/Dockerfile
+- [x] T102 [P] 在 frontend/Dockerfile 建立 frontend 的 Dockerfile，使用 nginx in frontend/Dockerfile
   - **Stage 1**: Build (npm run build)
   - **Stage 2**: nginx serve /dist
   - **nginx.conf**: SPA routing (fallback to index.html)
 
-- [ ] T103 [P] 在 frontend/Dockerfile 使用 layer caching 最佳化 Docker image in frontend/Dockerfile
+- [x] T103 [P] 在 frontend/Dockerfile 使用 layer caching 最佳化 Docker image in frontend/Dockerfile
   - **優化**: 先 COPY package.json, 再 npm install, 最後 COPY source
 
-- [ ] T104 [P] 在 README.md 建立完整的 README，包含快速入門指南 in README.md
+- [x] T104 [P] 在 README.md 建立完整的 README，包含快速入門指南 in README.md
   - **⚠️ 共享**: 與後端團隊協調整體專案說明
   - **內容**: 專案簡介、功能截圖、本地開發設定、環境變數說明
 
