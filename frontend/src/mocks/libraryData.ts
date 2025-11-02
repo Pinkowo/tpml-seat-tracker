@@ -7,7 +7,14 @@ export const mockLibraries: Library[] = [
     address: '臺北市大安區建國南路二段125號',
     latitude: 25.02607,
     longitude: 121.54044,
-    distance: 450
+    distance: 450,
+    operatingHours: {
+      openTime: '08:00',
+      closeTime: '21:00',
+      isOpen: true,
+      closesInMinutes: 75,
+      nextOpenTime: null
+    }
   },
   {
     id: 2,
@@ -15,7 +22,14 @@ export const mockLibraries: Library[] = [
     address: '臺北市士林區天母西路62號',
     latitude: 25.11622,
     longitude: 121.5256,
-    distance: 3200
+    distance: 3200,
+    operatingHours: {
+      openTime: '09:00',
+      closeTime: '20:00',
+      isOpen: true,
+      closesInMinutes: 12,
+      nextOpenTime: null
+    }
   },
   {
     id: 3,
@@ -23,7 +37,14 @@ export const mockLibraries: Library[] = [
     address: '臺北市文山區景後街151號',
     latitude: 24.99244,
     longitude: 121.54054,
-    distance: 6100
+    distance: 6100,
+    operatingHours: {
+      openTime: '10:00',
+      closeTime: '18:00',
+      isOpen: false,
+      closesInMinutes: null,
+      nextOpenTime: '明日 10:00'
+    }
   }
 ];
 
@@ -54,7 +75,14 @@ export const mockUnknownSeatStatus: SeatStatus = {
     name: '資料更新中',
     address: '尚無資料',
     latitude: 25.04178,
-    longitude: 121.51687
+    longitude: 121.51687,
+    operatingHours: {
+      openTime: '--:--',
+      closeTime: '--:--',
+      isOpen: false,
+      closesInMinutes: null,
+      nextOpenTime: null
+    }
   },
   available_seats: 0,
   total_seats: 0,

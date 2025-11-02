@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import type { LibraryWithSeat } from '@/types/library';
+import { OpeningHours } from './OpeningHours';
+import { ClosingWarning } from './ClosingWarning';
 
 interface LibraryDetailProps {
   open: boolean;
@@ -22,14 +24,6 @@ const getSeatText = (available?: number, total?: number) => {
     label: `${available} / ${total}`,
     description: '目前可用座位數 / 全部座位數'
   };
-};
-
-const getSeatColor = (available?: number) => {
-  if (available === undefined) {
-    return 'text-seat-unknown-border';
-  }
-
-  return available === 0 ? 'text-seat-full' : 'text-seat-available';
 };
 
 export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) => {
@@ -62,7 +56,15 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
 
   const { seatStatus } = library;
   const seatText = getSeatText(seatStatus?.available_seats, seatStatus?.total_seats);
-  const seatColor = getSeatColor(seatStatus?.available_seats);
+  const operatingHours = library.operatingHours;
+  const isOpen = operatingHours?.isOpen ?? true;
+  const seatColor = !isOpen
+    ? 'text-[#ADB8BE]'
+    : seatStatus?.available_seats === undefined
+      ? 'text-seat-unknown-border'
+      : seatStatus.available_seats === 0
+        ? 'text-seat-full'
+        : 'text-seat-available';
   const lastUpdated = seatStatus?.updated_at
     ? new Date(seatStatus.updated_at).toLocaleTimeString('zh-TW', {
         hour: '2-digit',
@@ -71,6 +73,16 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
     : undefined;
 
   const navigationUrl = `https://www.google.com/maps/dir/?api=1&destination=${library.latitude},${library.longitude}`;
+
+  const handleNavigate = () => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (typeof window !== 'undefined') {
+      window.open(navigationUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   const content = (
     <div
@@ -84,31 +96,64 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
         className="relative h-[85vh] w-full max-w-lg overflow-hidden rounded-t-3xl bg-white sm:h-auto sm:rounded-3xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="relative bg-primary px-6 pb-12 pt-10 text-white">
+        <div
+          className={clsx('relative px-6 pb-12 pt-10', {
+            'bg-primary text-white': isOpen,
+            'bg-[#E3E7E9] text-gray-600': !isOpen
+          })}
+        >
           <button
             type="button"
             onClick={onClose}
-            className="absolute left-6 top-6 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 backdrop-blur transition hover:bg-white/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className={clsx(
+              'absolute left-6 top-6 flex h-11 w-11 items-center justify-center rounded-full backdrop-blur transition focus:outline-none focus-visible:ring-2',
+              {
+                'bg-white/20 hover:bg-white/30 focus-visible:ring-white': isOpen,
+                'bg-white/50 text-gray-700 hover:bg-white/70 focus-visible:ring-gray-400': !isOpen
+              }
+            )}
             aria-label="關閉詳細資訊"
           >
             ×
           </button>
-          <p className="text-sm uppercase tracking-[0.2em] text-white/80">Library</p>
+          <p
+            className={clsx('text-sm uppercase tracking-[0.2em]', {
+              'text-white/80': isOpen,
+              'text-gray-500': !isOpen
+            })}
+          >
+            Library
+          </p>
           <h2 id="library-detail-title" className="mt-2 text-3xl font-semibold">
             {library.name}
           </h2>
-          <p className="mt-2 text-sm text-white/80">{library.address}</p>
+          <p
+            className={clsx('mt-2 text-sm', {
+              'text-white/80': isOpen,
+              'text-gray-500': !isOpen
+            })}
+          >
+            {library.address}
+          </p>
         </div>
 
         <div className="-mt-12 space-y-6 rounded-t-3xl bg-white px-6 pb-8 pt-6">
-          <div className="rounded-2xl bg-white p-6 shadow-card">
+          <div
+            className={clsx('rounded-2xl p-6 shadow-card', {
+              'bg-white text-gray-700': isOpen,
+              'bg-[#E3E7E9] text-gray-500': !isOpen
+            })}
+          >
             <p className="text-xs uppercase tracking-[0.2em] text-gray-500">目前座位狀態</p>
             <p className={clsx('mt-3 text-5xl font-bold', seatColor)}>{seatText.label}</p>
             <p className="mt-2 text-sm text-gray-500">{seatText.description}</p>
             {lastUpdated && <p className="mt-3 text-xs text-gray-400">更新時間：{lastUpdated}</p>}
           </div>
 
-          <div className="space-y-4 text-gray-700">
+          <OpeningHours operatingHours={operatingHours} isOpen={isOpen} />
+          <ClosingWarning closingInMinutes={operatingHours?.closesInMinutes ?? null} />
+
+          <div className={clsx('space-y-4', isOpen ? 'text-gray-700' : 'text-gray-500')}>
             <div>
               <h3 className="text-sm font-semibold text-gray-500">距離</h3>
               <p className="mt-1 text-base">
@@ -123,14 +168,20 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
         </div>
 
         <div className="border-t border-gray-100 bg-white px-6 py-5">
-          <a
-            href={navigationUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-base font-semibold text-white shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          <button
+            type="button"
+            onClick={handleNavigate}
+            disabled={!isOpen}
+            aria-disabled={!isOpen}
+            className={clsx(
+              'flex w-full items-center justify-center rounded-xl px-4 py-3 text-base font-semibold shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition',
+              isOpen
+                ? 'bg-primary text-white hover:bg-primary/90'
+                : 'cursor-not-allowed bg-gray-200 text-gray-500'
+            )}
           >
-            開啟導航
-          </a>
+            {isOpen ? '開啟導航' : '目前非營業時間' }
+          </button>
         </div>
       </div>
     </div>

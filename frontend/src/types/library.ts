@@ -5,6 +5,15 @@ export interface Library {
   latitude: number;
   longitude: number;
   distance?: number;
+  operatingHours?: OperatingHours;
+}
+
+export interface OperatingHours {
+  openTime: string;
+  closeTime: string;
+  isOpen: boolean;
+  closesInMinutes?: number | null;
+  nextOpenTime?: string | null;
 }
 
 export interface SeatStatus {
@@ -16,4 +25,5 @@ export interface SeatStatus {
 
 export interface LibraryWithSeat extends Library {
   seatStatus?: SeatStatus;
+  operatingHours?: OperatingHours;
 }

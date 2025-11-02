@@ -391,7 +391,7 @@
 
 ### 5.1 UI 元件（可平行執行）
 
-- [ ] T060 [P] [US3] 在 frontend/src/components/library-detail/OpeningHours.tsx 建立營業時間顯示元件 in frontend/src/components/library-detail/OpeningHours.tsx
+- [x] T060 [P] [US3] 在 frontend/src/components/library-detail/OpeningHours.tsx 建立營業時間顯示元件 in frontend/src/components/library-detail/OpeningHours.tsx
   - **設計規範**: 參考 `specs/design/components.md` - 詳細資訊頁面的資訊列表
   - **圖示**: clock icon (24x24px)，顏色 `#5AB4C5` (Primary/500)
   - **標籤**: 12px/Regular，顏色 `#91A0A8` (Grey/400) - "開放時間"
@@ -400,7 +400,7 @@
     - 營業狀態（營業中 / 已閉館）
   - **Props**: operatingHours, isOpen
 
-- [ ] T061 [P] [US3] 在 frontend/src/components/library-detail/ClosingWarning.tsx 建立倒數警告元件（60min/15min 臨界值） in frontend/src/components/library-detail/ClosingWarning.tsx
+- [x] T061 [P] [US3] 在 frontend/src/components/library-detail/ClosingWarning.tsx 建立倒數警告元件（60min/15min 臨界值） in frontend/src/components/library-detail/ClosingWarning.tsx
   - **設計規範**: 參考 `specs/design/design-tokens.css` - 語意化顏色
   - **邏輯與樣式**:
     - **≤ 15 分鐘**:
@@ -417,7 +417,7 @@
   - **字體**: 14px/Semibold
   - **Props**: closingInMinutes
 
-- [ ] T062 [P] [US3] 在 frontend/src/components/library-detail/LibraryDetail.tsx 新增閉館狀態樣式（灰色背景） in frontend/src/components/library-detail/LibraryDetail.tsx
+- [x] T062 [P] [US3] 在 frontend/src/components/library-detail/LibraryDetail.tsx 新增閉館狀態樣式（灰色背景） in frontend/src/components/library-detail/LibraryDetail.tsx
   - **設計規範**: 閉館時使用禁用色
   - **樣式**: isOpen=false 時
     - 背景: `#E3E7E9` (Grey/100 - Disable)
@@ -427,13 +427,13 @@
 
 ### 5.2 整合
 
-- [ ] T063 [US3] 在 frontend/src/components/library-detail/LibraryDetail.tsx 整合營業時間區塊到圖書館詳細資訊 modal in frontend/src/components/library-detail/LibraryDetail.tsx
+- [x] T063 [US3] 在 frontend/src/components/library-detail/LibraryDetail.tsx 整合營業時間區塊到圖書館詳細資訊 modal in frontend/src/components/library-detail/LibraryDetail.tsx
   - **⚠️ 依賴**: T060-T062 完成
   - **Layout**: OpeningHours + ClosingWarning 在座位資訊下方
 
 ### 5.3 測試 (US3)
 
-- [ ] T063b [P] [US3] 在 frontend/tests/integration/test_closing_warning.test.ts 撰寫倒數警告顯示的 integration tests in frontend/tests/integration/test_closing_warning.test.ts
+- [x] T063b [P] [US3] 在 frontend/tests/integration/test_closing_warning.test.ts 撰寫倒數警告顯示的 integration tests in frontend/tests/integration/test_closing_warning.test.ts
   - **測試案例**:
     - ≤ 15 分鐘顯示紅色警告
     - ≤ 60 分鐘顯示黃色提示
