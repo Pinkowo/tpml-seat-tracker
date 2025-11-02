@@ -1,0 +1,289 @@
+/**
+ * 圖書館座位追蹤器 - Design Tokens
+ * 設計系統變數定義
+ * 基於 Town Pass 設計系統 (台北市城市通)
+ * https://www.figma.com/community/file/1435823849677824862
+ */
+
+:root {
+  /* ========== 色彩系統 - Town Pass ========== */
+
+  /* Primary Color (品牌主色 - 青藍色) */
+  --color-primary-50: #EDF8FA;
+  --color-primary-100: #DBF1F5;
+  --color-primary-200: #B4E2EA;
+  --color-primary-300: #93D4DF;
+  --color-primary-400: #71C5D5;
+  --color-primary-500: #5AB4C5;  /* 主要品牌色 */
+  --color-primary-600: #468D9B;
+  --color-primary-700: #356C77;
+  --color-primary-800: #22474E;
+  --color-primary-900: #112629;
+  --color-primary-950: #081315;
+
+  /* Secondary Color (次要色 - 金黃色) */
+  --color-secondary-50: #FDF8ED;
+  --color-secondary-100: #FCF2DF;
+  --color-secondary-200: #F8E3BC;
+  --color-secondary-300: #F4D69E;
+  --color-secondary-400: #F0C87C;
+  --color-secondary-500: #F5BA4B;  /* 次要品牌色 */
+  --color-secondary-600: #E7A43C;
+  --color-secondary-700: #AD7B2B;
+  --color-secondary-800: #74521B;
+  --color-secondary-900: #3C2B0B;
+  --color-secondary-950: #1C1304;
+
+  /* Grey Scale (灰階色) */
+  --color-grey-50: #F1F3F4;
+  --color-grey-100: #E3E7E9;
+  --color-grey-200: #CAD1D5;
+  --color-grey-300: #ADB8BE;
+  --color-grey-400: #91A0A8;
+  --color-grey-500: #738995;
+  --color-grey-600: #5E6D76;
+  --color-grey-700: #475259;
+  --color-grey-800: #30383D;
+  --color-grey-900: #171B1D;
+  --color-grey-950: #0B0D0E;
+
+  /* Red (錯誤/警告色) */
+  --color-red-300: #E29494;
+  --color-red-500: #D45251;
+
+  /* Orange (提醒色) */
+  --color-orange-300: #F4B992;
+  --color-orange-500: #FD853A;
+
+  /* Green (成功/可用色) */
+  --color-green-500: #76A732;
+
+  /* Background Colors (背景色) */
+  --color-background-white: #FFFFFF;
+  --color-background-grey: #F1F3F4;
+
+  /* Semantic Colors (語意化顏色) */
+
+  /* Alarm (警告) */
+  --color-alarm-default: var(--color-red-500);
+  --color-alarm-hover: var(--color-red-300);
+
+  /* Reminder (提醒) */
+  --color-reminder-default: var(--color-orange-500);
+  --color-reminder-hover: var(--color-orange-300);
+
+  /* Disable (禁用) */
+  --color-disable: var(--color-grey-100);
+
+  /* Text (文字) */
+  --color-text-primary: var(--color-grey-800);
+  --color-text-secondary: var(--color-grey-700);
+  --color-text-description: var(--color-grey-400);
+
+  /* 專案特定色彩：座位狀態 */
+  --color-seat-available: var(--color-green-500);    /* 有空位 */
+  --color-seat-full: var(--color-grey-300);          /* 座位已滿 */
+  --color-seat-no-data: var(--color-background-white); /* 無資料 */
+  --color-seat-no-data-border: var(--color-grey-400);
+
+  /* 相容性別名 (與現有程式碼相容) */
+  --color-primary: var(--color-primary-500);
+  --color-primary-light: var(--color-primary-400);
+  --color-primary-dark: var(--color-primary-600);
+  --color-available: var(--color-seat-available);
+  --color-full: var(--color-seat-full);
+  --color-no-data: var(--color-seat-no-data);
+  --color-no-data-border: var(--color-seat-no-data-border);
+  --color-success: var(--color-green-500);
+  --color-warning: var(--color-orange-500);
+  --color-error: var(--color-red-500);
+  --color-info: var(--color-primary-500);
+
+  /* ========== 字體系統 - Town Pass ========== */
+
+  --font-family-base: "PingFang SC", "Microsoft JhengHei", "微軟正黑體",
+                      -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* 字型尺寸 */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px - Body */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px - H2 */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px - H1 */
+
+  /* 字重 */
+  --font-weight-normal: 400;   /* Regular */
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600; /* Semibold */
+  --font-weight-bold: 700;
+
+  /* 行高 */
+  --line-height-tight: 1.25;     /* 20px for 16px */
+  --line-height-normal: 1.333;   /* 32px for 24px */
+  --line-height-relaxed: 1.5;    /* 48px for 36px */
+
+  /* 字體組合 (Town Pass 規範) */
+  --font-h1-semibold: var(--font-weight-semibold) var(--font-size-4xl)/var(--line-height-relaxed) var(--font-family-base);
+  --font-h2-semibold: var(--font-weight-semibold) var(--font-size-2xl)/var(--line-height-normal) var(--font-family-base);
+  --font-body-semibold: var(--font-weight-semibold) var(--font-size-sm)/var(--line-height-tight) var(--font-family-base);
+  --font-body-regular: var(--font-weight-normal) var(--font-size-sm)/var(--line-height-tight) var(--font-family-base);
+
+  /* ========== 間距系統 ========== */
+
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+
+  /* ========== 圓角系統 ========== */
+
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.5rem;     /* 8px */
+  --radius-lg: 0.75rem;    /* 12px */
+  --radius-xl: 1rem;       /* 16px */
+  --radius-2xl: 1.5rem;    /* 24px */
+  --radius-full: 9999px;   /* 圓形 */
+
+  /* ========== 陰影系統 ========== */
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* ========== 動畫系統 ========== */
+
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+
+  /* 緩動函數 */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ========== Z-Index 層級 ========== */
+
+  --z-base: 1;
+  --z-dropdown: 50;
+  --z-sticky: 100;
+  --z-overlay: 150;
+  --z-modal: 200;
+  --z-toast: 250;
+
+  /* ========== 斷點 ========== */
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* ========== 特定元件尺寸 ========== */
+
+  /* 地圖標記 */
+  --marker-size: 32px;
+  --marker-size-hover: 40px;
+
+  /* 觸控目標最小尺寸 (依循 Town Pass Mobile 規範) */
+  --touch-target-min: 44px;
+
+  /* 面板寬度 */
+  --panel-width-mobile: 100%;
+  --panel-width-desktop: 320px;
+
+  /* 底部面板高度 */
+  --footer-height: 120px;
+  --footer-height-expanded: 70vh;
+
+  /* Safe Area (iOS) */
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
+  --safe-area-inset-right: env(safe-area-inset-right);
+}
+
+/* ========== 實用工具類別 ========== */
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+  .container { max-width: 640px; }
+}
+
+@media (min-width: 768px) {
+  .container { max-width: 768px; }
+}
+
+@media (min-width: 1024px) {
+  .container { max-width: 1024px; }
+}
+
+@media (min-width: 1280px) {
+  .container { max-width: 1280px; }
+}
+
+/* 文字工具 */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+/* Town Pass 字體組合 */
+.font-h1-semibold { font: var(--font-h1-semibold); }
+.font-h2-semibold { font: var(--font-h2-semibold); }
+.font-body-semibold { font: var(--font-body-semibold); }
+.font-body-regular { font: var(--font-body-regular); }
+
+/* 間距工具 */
+.m-auto { margin: auto; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+/* Flexbox 工具 */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+.gap-lg { gap: var(--spacing-lg); }
+
+/* 顯示工具 */
+.hidden { display: none; }
+.block { display: block; }
+.inline-block { display: inline-block; }
+
+/* 圓角工具 */
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* 陰影工具 */
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+
+/* 轉場工具 */
+.transition-fast { transition: all var(--transition-fast); }
+.transition-base { transition: all var(--transition-base); }
+.transition-slow { transition: all var(--transition-slow); }

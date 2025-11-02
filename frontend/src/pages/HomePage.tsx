@@ -4,7 +4,7 @@ import { InfoFooter } from '@/components/info-footer/InfoFooter';
 import { LibraryDetail } from '@/components/library-detail/LibraryDetail';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useLibraryData } from '@/hooks/useLibraryData';
-import { LibraryWithSeat } from '@/types/library';
+import type { LibraryWithSeat } from '@/types/library';
 
 const getLatestUpdatedAt = (libraries: LibraryWithSeat[]) => {
   const timestamps = libraries
@@ -30,11 +30,26 @@ const HomePage = () => {
 
   const lastUpdated = useMemo(() => getLatestUpdatedAt(libraries), [libraries]);
 
+  const hasGeoError = Boolean(geolocation.error);
+  const geolocationMessage =
+    geolocation.error ?? '為你推薦附近的圖書館座位狀況';
+
   return (
     <div className="relative flex h-screen w-full flex-col bg-[#E8EFF1]">
       <header className="pointer-events-none absolute left-0 right-0 top-0 z-20 flex justify-center p-6">
-        <div className="pointer-events-auto rounded-full bg-white/90 px-5 py-2 text-sm text-gray-600 shadow">
-          {geolocation.error ?? '為你推薦附近的圖書館座位狀況'}
+        <div
+          className={`pointer-events-auto flex items-center gap-2 rounded-full border px-5 py-2 text-sm shadow ${
+            hasGeoError
+              ? 'border-red-200 bg-red-50 text-red-600'
+              : 'border-transparent bg-white/90 text-gray-600'
+          }`}
+          role="status"
+          aria-live="polite"
+        >
+          {hasGeoError && (
+            <span className="inline-flex h-2 w-2 rounded-full bg-red-400" aria-hidden="true" />
+          )}
+          <span>{geolocationMessage}</span>
         </div>
       </header>
 

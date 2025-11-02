@@ -1,14 +1,10 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { vi, describe, it, beforeEach, expect } from 'vitest';
+import { vi, describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { useGeolocation } from '@/hooks/useGeolocation';
 
-declare global {
-  interface Navigator {
-    geolocation?: Geolocation;
-  }
-}
-
 describe('useGeolocation', () => {
+  const originalGeolocation = navigator.geolocation;
+
   const mockGeolocation = () => {
     const getCurrentPosition = vi.fn();
     Object.defineProperty(global.navigator, 'geolocation', {
@@ -20,6 +16,13 @@ describe('useGeolocation', () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+  });
+
+  afterEach(() => {
+    Object.defineProperty(global.navigator, 'geolocation', {
+      configurable: true,
+      value: originalGeolocation
+    });
   });
 
   it('returns current position when permission granted', async () => {

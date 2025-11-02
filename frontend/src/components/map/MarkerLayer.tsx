@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { Map as MapboxMap, Marker as MapboxMarker } from 'mapbox-gl';
-import { LibraryWithSeat } from '@/types/library';
+import type { LibraryWithSeat } from '@/types/library';
 
 interface MarkerLayerProps {
   map: MapboxMap;
@@ -58,44 +58,48 @@ export const MarkerLayer = ({
     const markers = markersRef.current;
 
     const setupMarkers = async () => {
-      const mapbox: typeof import('mapbox-gl') = await import('mapbox-gl');
+      try {
+        const { default: mapbox } = await import('mapbox-gl');
 
-      if (isCancelled) {
-        return;
+        if (isCancelled) {
+          return;
+        }
+
+        markers.forEach(({ marker, handleClick }) => {
+          const element = marker.getElement();
+          element.removeEventListener('click', handleClick);
+          marker.remove();
+        });
+        markers.clear();
+
+        libraries.forEach((library) => {
+          const element = document.createElement('button');
+          element.type = 'button';
+          element.className = `${MARKER_BASE_CLASS} ${getMarkerVariantClass(library)} ${
+            library.id === selectedLibraryId ? 'scale-110 shadow-lg' : ''
+          }`;
+          element.textContent = `${library.seatStatus?.available_seats ?? '-'}`;
+          element.setAttribute('role', 'button');
+          element.setAttribute('aria-label', getAriaLabel(library));
+
+          const handleClick = () => {
+            onMarkerClick(library.id);
+            if ('vibrate' in navigator) {
+              navigator.vibrate?.(10);
+            }
+          };
+
+          element.addEventListener('click', handleClick);
+
+          const marker = new mapbox.Marker({ element })
+            .setLngLat([library.longitude, library.latitude])
+            .addTo(map);
+
+          markers.set(library.id, { marker, handleClick });
+        });
+      } catch (error) {
+        console.error('Mapbox 標記載入失敗', error);
       }
-
-      markers.forEach(({ marker, handleClick }) => {
-        const element = marker.getElement();
-        element.removeEventListener('click', handleClick);
-        marker.remove();
-      });
-      markers.clear();
-
-      libraries.forEach((library) => {
-        const element = document.createElement('button');
-        element.type = 'button';
-        element.className = `${MARKER_BASE_CLASS} ${getMarkerVariantClass(library)} ${
-          library.id === selectedLibraryId ? 'scale-110 shadow-lg' : ''
-        }`;
-        element.textContent = `${library.seatStatus?.available_seats ?? '-'}`;
-        element.setAttribute('role', 'button');
-        element.setAttribute('aria-label', getAriaLabel(library));
-
-        const handleClick = () => {
-          onMarkerClick(library.id);
-          if ('vibrate' in navigator) {
-            navigator.vibrate?.(10);
-          }
-        };
-
-        element.addEventListener('click', handleClick);
-
-        const marker = new mapbox.Marker({ element })
-          .setLngLat([library.longitude, library.latitude])
-          .addTo(map);
-
-        markers.set(library.id, { marker, handleClick });
-      });
     };
 
     void setupMarkers();

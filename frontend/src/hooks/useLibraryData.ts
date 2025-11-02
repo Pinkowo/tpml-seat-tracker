@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Library, LibraryWithSeat, SeatStatus } from '@/types/library';
+import type { Library, LibraryWithSeat, SeatStatus } from '@/types/library';
 import { calculateDistanceInMeters } from '@/utils/geo';
 import { mockLibraries, mockSeatStatuses, simulatedDelay } from '@/mocks/libraryData';
 

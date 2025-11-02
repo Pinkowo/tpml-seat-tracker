@@ -1,4 +1,4 @@
-import { Library, SeatStatus } from '@/types/library';
+import type { Library, SeatStatus } from '@/types/library';
 
 export const mockLibraries: Library[] = [
   {

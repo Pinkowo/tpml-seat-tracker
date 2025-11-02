@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
-import { LibraryWithSeat } from '@/types/library';
+import type { LibraryWithSeat } from '@/types/library';
 
 interface LibraryDetailProps {
   open: boolean;

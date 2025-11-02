@@ -24,7 +24,7 @@ export const useGeolocation = (enable = true): GeolocationState => {
     if (typeof window === 'undefined' || !('geolocation' in navigator)) {
       setState({
         location: DEFAULT_CENTER,
-        error: '裝置不支援定位功能，已使用預設位置。',
+        error: '裝置不支援定位功能。請手動瀏覽地圖或輸入地址，已使用預設位置（台北市政府）。',
         loading: false
       });
       return;
@@ -44,8 +44,8 @@ export const useGeolocation = (enable = true): GeolocationState => {
     const onError: PositionErrorCallback = (error) => {
       const message =
         error.code === error.PERMISSION_DENIED
-          ? '未取得定位權限，已使用預設位置。'
-          : '取得定位資訊時發生錯誤，已使用預設位置。';
+          ? '未取得定位權限。請在瀏覽器設定允許定位後重新整理頁面，已使用預設位置（台北市政府）。'
+          : '取得定位資訊時發生問題。請稍後再試或手動拖曳地圖，已使用預設位置（台北市政府）。';
 
       setState({
         location: DEFAULT_CENTER,

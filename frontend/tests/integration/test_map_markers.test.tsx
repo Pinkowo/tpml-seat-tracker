@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { afterEach, describe, it, expect, beforeEach, vi } from 'vitest';
 import mapboxgl from 'mapbox-gl';
 import type { Map as MapboxMap } from 'mapbox-gl';
 import { MarkerLayer } from '@/components/map/MarkerLayer';
@@ -8,6 +8,10 @@ import type { LibraryWithSeat } from '@/types/library';
 describe('MarkerLayer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('creates markers with correct accessibility labels and colors', async () => {
@@ -61,7 +65,8 @@ describe('MarkerLayer', () => {
       />
     );
 
-    const markerMock = mapboxgl.Marker as unknown as vi.Mock;
+    type ViMock = ReturnType<typeof vi.fn>;
+    const markerMock = mapboxgl.Marker as unknown as ViMock;
 
     await waitFor(() => {
       expect(markerMock).toHaveBeenCalledTimes(2);

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Map as MapboxMap } from 'mapbox-gl';
-import { LibraryWithSeat } from '@/types/library';
+import type { LibraryWithSeat } from '@/types/library';
 import { MarkerLayer } from './MarkerLayer';
 
 const DEFAULT_COORDINATE: [number, number] = [121.535404, 25.042233];
@@ -21,6 +21,7 @@ export const MapView = ({
   const mapNode = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapboxMap | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
   const accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
   useEffect(() => {
@@ -32,14 +33,17 @@ export const MapView = ({
     let isCancelled = false;
 
     const initMap = async () => {
-      const mapbox: typeof import('mapbox-gl') = await import('mapbox-gl');
+      try {
+        const { default: mapbox } = await import('mapbox-gl');
 
-      if (isCancelled || !mapNode.current) {
-        return;
-      }
+        if (isCancelled || !mapNode.current) {
+          return;
+        }
 
-      mapbox.accessToken = accessToken;
-      mapInstance = new mapbox.Map({
+        setMapError(null);
+        setIsReady(false);
+        mapbox.accessToken = accessToken;
+        mapInstance = new mapbox.Map({
         container: mapNode.current,
         style: 'mapbox://styles/mapbox/streets-v12',
         center: userLocation ? [userLocation.lng, userLocation.lat] : DEFAULT_COORDINATE,
@@ -54,7 +58,23 @@ export const MapView = ({
         }
       });
 
+      mapInstance.on('error', () => {
+        if (!isCancelled) {
+          setMapError(
+            '地圖載入失敗，請確認 Mapbox Token 是否有效或網路連線是否正常，重新整理頁面後再試一次。'
+          );
+        }
+      });
+
       mapRef.current = mapInstance;
+      } catch (error) {
+        if (!isCancelled) {
+          console.error('Mapbox 初始化失敗', error);
+          setMapError(
+            '地圖元件載入失敗，請重新整理頁面或稍後再試。若問題持續，請確認 Mapbox 套件是否安裝完整。'
+          );
+        }
+      }
     };
 
     void initMap();
@@ -80,8 +100,17 @@ export const MapView = ({
 
   if (!accessToken) {
     return (
-      <div className="flex h-full min-h-[480px] items-center justify-center bg-gray-200 text-gray-600">
-        無法顯示地圖，請在 .env 檔案中設定 VITE_MAPBOX_TOKEN。
+      <div className="flex h-full min-h-[480px] items-center justify-center bg-gray-100 px-6 text-center text-gray-700">
+        <div className="max-w-md space-y-3 rounded-2xl bg-white/90 p-6 shadow-card backdrop-blur">
+          <h2 className="text-lg font-semibold text-primary">無法載入地圖</h2>
+          <p className="text-sm leading-relaxed">
+            尚未設定 Mapbox Token。請開啟 <code>.env</code>，填入{' '}
+            <code>VITE_MAPBOX_TOKEN=你的 Token</code>，儲存後重新啟動開發伺服器。
+          </p>
+          <p className="text-xs text-gray-500">
+            若尚未申請 Token，可先瀏覽標記與詳情（使用模擬資料）。
+          </p>
+        </div>
       </div>
     );
   }
@@ -89,6 +118,25 @@ export const MapView = ({
   return (
     <div className="relative h-full min-h-[480px] w-full">
       <div ref={mapNode} className="absolute inset-0" />
+      {mapError && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/85 px-6 text-center text-gray-700 backdrop-blur">
+          <div className="max-w-md space-y-3 rounded-2xl bg-white p-6 shadow-card">
+            <h2 className="text-lg font-semibold text-primary">地圖載入失敗</h2>
+            <p className="text-sm leading-relaxed">{mapError}</p>
+            <div className="flex flex-col gap-2 text-xs text-gray-500">
+              <span>1. 確認 .env 中的 VITE_MAPBOX_TOKEN 是否正確。</span>
+              <span>2. 檢查網路連線後重新整理此頁。</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+            >
+              重新整理頁面
+            </button>
+          </div>
+        </div>
+      )}
       {isReady && mapRef.current && (
         <MarkerLayer
           map={mapRef.current}
