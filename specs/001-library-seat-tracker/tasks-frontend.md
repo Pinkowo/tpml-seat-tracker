@@ -49,20 +49,20 @@
 
 ### 1.1 專案結構與設定
 
-- [ ] T002 [P] 建立 frontend 目錄結構 (frontend/src/{components,pages,store,services,hooks,types}/) in frontend/src/
+- [x] T002 [P] 建立 frontend 目錄結構 (frontend/src/{components,pages,store,services,hooks,types}/) in frontend/src/
   - **目錄**: components/, pages/, store/, services/, hooks/, types/, tests/
   - **子目錄**: components/map/, components/library-list/, components/library-detail/, components/info-footer/
 
-- [ ] T005 [P] 建立 frontend/.env.example，包含 Mapbox token 佔位符 in frontend/.env.example
+- [x] T005 [P] 建立 frontend/.env.example，包含 Mapbox token 佔位符 in frontend/.env.example
   - **變數**: VITE_MAPBOX_TOKEN, VITE_API_BASE_URL
 
 ### 1.2 Vite + React + TypeScript 初始化
 
-- [ ] T011 在 frontend/ 初始化 Vite + React + TypeScript 專案 in frontend/
+- [x] T011 在 frontend/ 初始化 Vite + React + TypeScript 專案 in frontend/
   - **命令**: `npm create vite@latest frontend -- --template react-ts`
   - **檢查**: package.json, vite.config.ts, tsconfig.json
 
-- [ ] T012 在 frontend/package.json 安裝依賴項: Mapbox GL JS, React Query, @reduxjs/toolkit react-redux, Tailwind CSS in frontend/package.json
+- [x] T012 在 frontend/package.json 安裝依賴項: Mapbox GL JS, React Query, @reduxjs/toolkit react-redux, Tailwind CSS in frontend/package.json
   - **核心**:
     - mapbox-gl, @types/mapbox-gl
     - @tanstack/react-query
@@ -71,7 +71,7 @@
     - react-router-dom
   - **工具**: @types/node, clsx
 
-- [ ] T012a [P] 在 frontend/src/index.html 引入 Town Pass 設計系統 in frontend/src/index.html
+- [x] T012a [P] 在 frontend/src/index.html 引入 Town Pass 設計系統 in frontend/src/index.html
   - **設計規範**: 引入 `specs/design/design-tokens.css` 到專案
   - **用途**: 提供完整的 Town Pass 色彩系統、字體、間距等 CSS 變數
   - **文件**: 參考 `specs/design/README.md` 了解如何使用設計變數
@@ -80,7 +80,7 @@
     <link rel="stylesheet" href="/specs/design/design-tokens.css">
     ```
 
-- [ ] T013 [P] 在 frontend/tailwind.config.js 設定 Tailwind CSS in frontend/tailwind.config.js
+- [x] T013 [P] 在 frontend/tailwind.config.js 設定 Tailwind CSS in frontend/tailwind.config.js
   - **Content paths**: "./src/**/*.{js,ts,jsx,tsx}"
   - **設計規範**: 擴展 Tailwind 設定以使用 Town Pass 色彩系統
   - **Theme 自訂顏色**:
@@ -91,24 +91,24 @@
     - 座位狀態 - 無資料: `#FFFFFF` + 邊框 `#91A0A8`
   - **參考**: `specs/design/design-tokens.css`
 
-- [ ] T014 [P] 在 frontend/tsconfig.json 設定 TypeScript strict mode in frontend/tsconfig.json
+- [x] T014 [P] 在 frontend/tsconfig.json 設定 TypeScript strict mode in frontend/tsconfig.json
   - **Strict options**: strict: true, noImplicitAny: true
   - **Path aliases**: @/ → ./src/
 
-- [ ] T015 [P] 在 frontend/ 設定 ESLint 與 Prettier in frontend/
+- [x] T015 [P] 在 frontend/ 設定 ESLint 與 Prettier in frontend/
   - **ESLint**: react, typescript plugins
   - **Prettier**: semi: true, singleQuote: true
 
 ### 1.3 測試基礎設施
 
-- [ ] T015b [P] 在 frontend/package.json 安裝 Vitest 與 @testing-library/react in frontend/package.json
+- [x] T015b [P] 在 frontend/package.json 安裝 Vitest 與 @testing-library/react in frontend/package.json
   - **套件**: vitest, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event, jsdom
 
-- [ ] T015d [P] 建立 frontend/tests/ 目錄結構 (unit/, integration/, setup.ts) in frontend/tests/
+- [x] T015d [P] 建立 frontend/tests/ 目錄結構 (unit/, integration/, setup.ts) in frontend/tests/
   - **目錄**: unit/, integration/
   - **檔案**: setup.ts, __mocks__/
 
-- [ ] T015f [P] 在 frontend/ 設定 vitest.config.ts in frontend/vitest.config.ts
+- [x] T015f [P] 在 frontend/ 設定 vitest.config.ts in frontend/vitest.config.ts
   - **設定**: environment: 'jsdom', setupFiles: ['./tests/setup.ts']
 
 ---
@@ -123,33 +123,33 @@
 
 ### 2.1 核心設定（可平行執行）
 
-- [ ] T029 [P] 在 frontend/src/App.tsx 建立 App.tsx，包含 React Router 設定 in frontend/src/App.tsx
+- [x] T029 [P] 在 frontend/src/App.tsx 建立 App.tsx，包含 React Router 設定 in frontend/src/App.tsx
   - **Routes**:
     - `/` → HomePage
     - 未來可擴充其他 routes
   - **Layout**: 包含 ErrorBoundary
 
-- [ ] T030 [P] 在 frontend/src/store/index.ts 使用 Redux Toolkit 建立 Redux store 設定 in frontend/src/store/index.ts
+- [x] T030 [P] 在 frontend/src/store/index.ts 使用 Redux Toolkit 建立 Redux store 設定 in frontend/src/store/index.ts
   - **Slices**: 未來新增（例如：uiSlice for modal state）
   - **Middleware**: Redux Toolkit 預設 middleware
 
-- [ ] T031 [P] 在 frontend/src/main.tsx 建立 React Query provider 設定 in frontend/src/main.tsx
+- [x] T031 [P] 在 frontend/src/main.tsx 建立 React Query provider 設定 in frontend/src/main.tsx
   - **QueryClient config**:
     - refetchOnWindowFocus: false（Phase 7 會改為 true）
     - staleTime: 0（Phase 7 會設定為 10 分鐘）
   - **Provider 順序**: QueryClientProvider > Redux Provider > App
 
-- [ ] T032 [P] 在 frontend/src/services/api.ts 建立 axios instance，包含 base URL 設定 in frontend/src/services/api.ts
+- [x] T032 [P] 在 frontend/src/services/api.ts 建立 axios instance，包含 base URL 設定 in frontend/src/services/api.ts
   - **Config**:
     - baseURL: import.meta.env.VITE_API_BASE_URL
     - timeout: 10000
     - headers: { 'Content-Type': 'application/json' }
   - **Interceptors**: Request/response logging
 
-- [ ] T033 [P] 在 frontend/src/types/api.ts 建立 API 回應的 TypeScript types in frontend/src/types/api.ts
+- [x] T033 [P] 在 frontend/src/types/api.ts 建立 API 回應的 TypeScript types in frontend/src/types/api.ts
   - **Types**: ApiResponse<T>, ApiError, PaginatedResponse<T>
 
-- [ ] T034 [P] 在 frontend/src/components/ErrorBoundary.tsx 建立 error boundary component in frontend/src/components/ErrorBoundary.tsx
+- [x] T034 [P] 在 frontend/src/components/ErrorBoundary.tsx 建立 error boundary component in frontend/src/components/ErrorBoundary.tsx
   - **功能**: Catch React errors, 顯示 fallback UI
   - **Logging**: 記錄錯誤到 console（Phase 8 會整合錯誤追蹤）
 
@@ -168,12 +168,12 @@
 
 ### 3.1 Types 與 Hooks（可平行執行）
 
-- [ ] T041 [P] [US1] 在 frontend/src/hooks/useGeolocation.ts 建立 useGeolocation hook，取得使用者位置 in frontend/src/hooks/useGeolocation.ts
+- [x] T041 [P] [US1] 在 frontend/src/hooks/useGeolocation.ts 建立 useGeolocation hook，取得使用者位置 in frontend/src/hooks/useGeolocation.ts
   - **功能**: 使用 navigator.geolocation API
   - **回傳**: `{ location: {lat, lng} | null, error: string | null, loading: boolean }`
   - **權限**: 處理 permission denied
 
-- [ ] T042 [P] [US1] 在 frontend/src/types/library.ts 建立 Library 與 SeatStatus 的 TypeScript types in frontend/src/types/library.ts
+- [x] T042 [P] [US1] 在 frontend/src/types/library.ts 建立 Library 與 SeatStatus 的 TypeScript types in frontend/src/types/library.ts
   - **Types**:
     ```typescript
     interface Library {
@@ -193,7 +193,7 @@
     }
     ```
 
-- [ ] T047 [P] [US1] 在 frontend/src/hooks/useLibraryData.ts 使用 React Query 建立 useLibraryData hook in frontend/src/hooks/useLibraryData.ts
+- [x] T047 [P] [US1] 在 frontend/src/hooks/useLibraryData.ts 使用 React Query 建立 useLibraryData hook in frontend/src/hooks/useLibraryData.ts
   - **Queries**:
     - `useLibraries(userLat, userLng)` → GET /api/v1/libraries
     - `useRealtimeSeats()` → GET /api/v1/realtime
@@ -201,7 +201,7 @@
 
 ### 3.2 地圖元件（依序執行）
 
-- [ ] T043 [US1] 在 frontend/src/components/map/MapView.tsx 建立 Mapbox 地圖初始化元件 in frontend/src/components/map/MapView.tsx
+- [x] T043 [US1] 在 frontend/src/components/map/MapView.tsx 建立 Mapbox 地圖初始化元件 in frontend/src/components/map/MapView.tsx
   - **⚠️ 依賴**: T041（useGeolocation）完成
   - **設計規範**: 參考 `specs/design/components.md` - 地圖區域規格
   - **功能**:
@@ -210,7 +210,7 @@
     - Zoom level: 12
   - **Props**: onMarkerClick, selectedLibraryId
 
-- [ ] T044 [US1] 在 frontend/src/components/map/MarkerLayer.tsx 建立標記渲染，包含顏色邏輯（綠/灰/白） in frontend/src/components/map/MarkerLayer.tsx
+- [x] T044 [US1] 在 frontend/src/components/map/MarkerLayer.tsx 建立標記渲染，包含顏色邏輯（綠/灰/白） in frontend/src/components/map/MarkerLayer.tsx
   - **⚠️ 依賴**: T043（MapView）完成
   - **設計規範**: 參考 `specs/design/components.md` - 地圖標記 (Map Marker)
   - **顏色使用 Town Pass 系統**:
@@ -229,7 +229,7 @@
 
 ### 3.3 UI 元件（可平行執行）
 
-- [ ] T045 [P] [US1] 在 frontend/src/components/info-footer/InfoFooter.tsx 建立資訊頁尾元件，包含圖例 in frontend/src/components/info-footer/InfoFooter.tsx
+- [x] T045 [P] [US1] 在 frontend/src/components/info-footer/InfoFooter.tsx 建立資訊頁尾元件，包含圖例 in frontend/src/components/info-footer/InfoFooter.tsx
   - **設計規範**: 參考 `specs/design/README.md` - 底部滑動面板規格
   - **內容**:
     - 顏色圖例（綠/灰/白）
@@ -237,7 +237,7 @@
   - **位置**: Fixed bottom, 透明背景
   - **顏色**: 使用 Town Pass 系統色彩
 
-- [ ] T046 [US1] 在 frontend/src/components/library-detail/LibraryDetail.tsx 建立圖書館詳細資訊 modal，包含座位資訊與導航 in frontend/src/components/library-detail/LibraryDetail.tsx
+- [x] T046 [US1] 在 frontend/src/components/library-detail/LibraryDetail.tsx 建立圖書館詳細資訊 modal，包含座位資訊與導航 in frontend/src/components/library-detail/LibraryDetail.tsx
   - **設計規範**: 參考 `specs/design/components.md` - 詳細資訊頁面 (Detail Page)
   - **頂部彩色區塊**:
     - 背景: 主色 `#5AB4C5` (Primary/500)
@@ -264,7 +264,7 @@
 
 ### 3.4 頁面整合
 
-- [ ] T048 [US1] 在 frontend/src/pages/HomePage.tsx 整合地圖與資訊頁尾 in frontend/src/pages/HomePage.tsx
+- [x] T048 [US1] 在 frontend/src/pages/HomePage.tsx 整合地圖與資訊頁尾 in frontend/src/pages/HomePage.tsx
   - **⚠️ 依賴**: T043-T046 完成
   - **Layout**:
     - MapView（全螢幕）
@@ -274,13 +274,13 @@
 
 ### 3.5 測試 (US1)
 
-- [ ] T048e [P] [US1] 在 frontend/tests/integration/test_map_markers.test.ts 使用 mock API 撰寫地圖標記渲染的 integration tests in frontend/tests/integration/test_map_markers.test.ts
+- [x] T048e [P] [US1] 在 frontend/tests/integration/test_map_markers.test.ts 使用 mock API 撰寫地圖標記渲染的 integration tests in frontend/tests/integration/test_map_markers.test.ts
   - **測試案例**:
     - 標記正確渲染
     - 顏色邏輯正確
     - Click 開啟 modal
 
-- [ ] T048f [P] [US1] 在 frontend/tests/unit/hooks/test_useGeolocation.test.ts 撰寫 useGeolocation hook 的 unit tests in frontend/tests/unit/hooks/test_useGeolocation.test.ts
+- [x] T048f [P] [US1] 在 frontend/tests/unit/hooks/test_useGeolocation.test.ts 撰寫 useGeolocation hook 的 unit tests in frontend/tests/unit/hooks/test_useGeolocation.test.ts
   - **測試案例**: Permission granted, denied, error
 
 **檢查點**: US1 前端完成 - 地圖可顯示圖書館標記
