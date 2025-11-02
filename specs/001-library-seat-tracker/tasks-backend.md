@@ -57,13 +57,17 @@
 
 ### 1.2 Python 專案初始化
 
-- [ ] T006 在 backend/ 初始化 Python 3.12 專案，包含 pyproject.toml in backend/pyproject.toml
-  - **工具**: Poetry or pip-tools
+- [ ] T006 在 backend/ 使用 uv 初始化 Python 3.12 專案，包含 pyproject.toml in backend/pyproject.toml
+  - **工具**: uv (package manager)
+  - **命令**: `uv init` 或 `uv venv && uv pip compile pyproject.toml`
   - **Python version**: >=3.12
+  - **輸出**: pyproject.toml, uv.lock（如適用）
 
-- [ ] T007 在 backend/pyproject.toml 安裝 FastAPI, SQLAlchemy, Alembic, APScheduler, httpx 依賴項 in backend/pyproject.toml
+- [ ] T007 使用 uv 在 backend/pyproject.toml 安裝 FastAPI, SQLAlchemy, Alembic, APScheduler, httpx 依賴項 in backend/pyproject.toml
+  - **命令**: `uv pip install fastapi uvicorn sqlalchemy alembic apscheduler httpx pydantic-settings loguru python-dotenv` 或 `uv sync`
   - **核心**: fastapi, uvicorn, sqlalchemy, alembic, apscheduler, httpx, pydantic-settings
   - **工具**: loguru, python-dotenv
+  - **輸出**: 更新 pyproject.toml 與 uv.lock
 
 - [ ] T008 在 backend/alembic.ini 初始化 Alembic 設定 in backend/alembic.ini
   - **命令**: `alembic init alembic`

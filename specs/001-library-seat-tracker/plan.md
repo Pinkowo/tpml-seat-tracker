@@ -1,128 +1,135 @@
 # Implementation Plan: 圖書館座位地圖與預測系統
 
-**Branch**: `001-library-seat-tracker` | **Date**: 2025-11-01 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-library-seat-tracker` | **Date**: 2025-11-02 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/001-library-seat-tracker/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-建立互動式圖書館座位地圖系統，提供即時座位資訊查詢、距離排序、開館倒數提醒，以及未來 30/60 分鐘的座位可用性預測。系統每 10 分鐘自動更新座位資料，並使用機器學習模型進行趨勢預測，協助使用者快速決策與導航。
+本專案需建立一個圖書館座位地圖與預測系統，透過互動地圖呈現各圖書館即時座位資訊與開館倒數，提供「附近可用館別推薦」，並預測未來 30 分鐘與 1 小時的可用座位數。系統包含前端地圖介面與後端 API 服務，後端使用 Python + FastAPI，採用 uv 作為套件依賴管理工具，搭配定時排程擷取外部 API 資料並訓練預測模型。
 
-## 技術背景資訊
+## Technical Context
 
-**語言/版本**: Python 3.12 (backend), TypeScript (frontend)
-**主要依賴套件**: FastAPI, SQLAlchemy 2.x, Alembic, React, Vite, Tailwind CSS, Redux Toolkit, Mapbox GL JS v2.16+
-**儲存方案**: PostgreSQL 15 (時間序列資料、模型註冊表、預測結果)
-**測試框架**: pytest (backend), Vitest (frontend), contract tests for API
-**目標平台**: Docker containers on GCP (backend), modern browsers (frontend)
-**專案類型**: Web application (backend + frontend)
-**效能目標**:
-- 地圖載入 < 2 秒（快取命中時）
-- 全部館標記繪製 < 500ms
-- API 回應時間 < 200ms (p95)
-- 支援並發查詢 100+ requests/sec
-**限制條件**:
-- 資料更新頻率固定為 10 分鐘（與外部 API 限制對齊）
-- 預測模型訓練需在每日 03:00 完成以避免影響查詢效能
-- 前端必須支援無定位權限的降級體驗
-**規模/範疇**:
-- 約 50 個圖書館分館
-- 每館 3-10 個座位區域
-- 保留 30 天歷史資料供模型訓練
-- 預計 1000+ 日活躍使用者
+**Language/Version**: Python 3.12（後端）、TypeScript/JavaScript（前端）
+**Primary Dependencies**:
+- 後端：FastAPI、uvicorn、SQLAlchemy、scikit-learn（預測模型）、httpx（外部 API 呼叫）、APScheduler（排程）
+- 前端：NEEDS CLARIFICATION（地圖函式庫選擇：Leaflet、Mapbox、Google Maps API）
+- 套件管理：uv（後端 Python 依賴管理）
+**Storage**: PostgreSQL（即時座位狀態、歷史資料、館別基本資料）
+**Testing**: pytest（後端）、NEEDS CLARIFICATION（前端測試框架）
+**Target Platform**: Linux server（後端）、Web browser（前端）
+**Project Type**: web（frontend + backend）
+**Performance Goals**:
+- API p95 < 200ms
+- 地圖標記繪製 < 500ms
+- 頁面載入 < 2s（快取命中時）
+- 資料擷取成功率 ≥ 95%
+**Constraints**:
+- 資料更新頻率：每 10 分鐘
+- 預測模型訓練：每日執行
+- 定位座標不落資料庫
+- MVP 不整合節假日 API
+**Scale/Scope**:
+- 館別數量：NEEDS CLARIFICATION（台北市圖書館分館數）
+- 預期使用者數：NEEDS CLARIFICATION
+- 歷史資料保留：最近 30 天
 
-## 專案憲章檢查
+## Constitution Check
 
-*關卡：必須在 Phase 0 研究之前通過。Phase 1 設計之後重新檢查。*
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-**備註**: 未找到專案憲章檔案。遵循標準最佳實踐原則：
-- 避免過度工程化（KISS 原則）
-- 優先選擇簡單方案而非複雜抽象
-- 技術選擇必須有實際需求支撐
+### Code Quality
+- ✅ 遵循 SOLID 原則：Controller-Service-Repository 分層
+- ✅ 使用強型別：Python type hints、TypeScript
+- ✅ 錯誤處理：所有 API 回應包含錯誤上下文
 
-## 專案結構
+### Testing Discipline
+- ✅ TDD 強制執行：先寫測試再實作
+- ✅ Contract Tests：API endpoints
+- ✅ Integration Tests：外部 API 呼叫、資料庫互動
+- ✅ Unit Tests：預測模型、業務邏輯
+- ✅ 目標覆蓋率：≥ 80%
 
-### 文件目錄（本功能）
+### User Experience Consistency
+- ✅ 即時回饋：載入狀態、錯誤訊息
+- ✅ 無障礙：WCAG 2.1 AA（ARIA 標籤、鍵盤支援）
+- ✅ 回應式設計：支援桌面與行動裝置
+- ✅ 定位權限處理：提供明確引導與回退機制
+
+### Performance Standards
+- ✅ API p95 < 200ms
+- ✅ 頁面載入 < 2s
+- ✅ 資料庫索引：library_name、timestamp
+- ✅ 前端 bundle size：需監控並最佳化
+
+### Documentation Language
+- ✅ 所有文件使用繁體中文（spec.md、plan.md、tasks.md、README、API 文件）
+- ✅ Code comments 使用繁體中文（public API docstrings）
+- ✅ Commit messages 偏好繁體中文
+
+### Dependency Management
+- ✅ 使用 uv 管理 Python 依賴
+- ✅ Pin 主版本與次版本，commit lock files
+- ✅ 定期掃描安全性漏洞
+- ⚠️ 需評估前端地圖函式庫的授權相容性
+
+### Compliance Gate
+**Status**: ✅ PASS（需在 Phase 0 解決 NEEDS CLARIFICATION 項目）
+
+無需填寫 Complexity Tracking 表格（無違反 constitution 的情況）
+
+## Project Structure
+
+### Documentation (this feature)
 
 ```text
 specs/[###-feature]/
-├── plan.md              # 本檔案（/speckit.plan 指令輸出）
-├── research.md          # Phase 0 輸出（/speckit.plan 指令）
-├── data-model.md        # Phase 1 輸出（/speckit.plan 指令）
-├── quickstart.md        # Phase 1 輸出（/speckit.plan 指令）
-├── contracts/           # Phase 1 輸出（/speckit.plan 指令）
-└── tasks.md             # Phase 2 輸出（/speckit.tasks 指令 - 非由 /speckit.plan 建立）
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```
 
-### 原始碼目錄（repository root）
+### Source Code (repository root)
 
 ```text
 backend/
 ├── src/
-│   ├── api/
-│   │   ├── routes/          # API endpoints (/realtime, /predict, /libraries)
-│   │   ├── dependencies.py  # FastAPI dependencies (DB session, auth)
-│   │   └── schemas.py       # Pydantic request/response models
-│   ├── models/              # SQLAlchemy ORM models
-│   │   ├── library.py
-│   │   ├── seat.py
-│   │   ├── prediction.py
-│   │   └── model_registry.py
-│   ├── services/            # 業務邏輯
-│   │   ├── seat_collector.py    # Task A: 每 10 分鐘擷取座位資料
-│   │   ├── prediction_trainer.py # Task B: 每日模型訓練
-│   │   ├── library_sync.py       # Task C: 每日分館資料同步
-│   │   └── distance.py           # 地理距離計算
-│   ├── db/
-│   │   ├── session.py       # Database connection pool
-│   │   └── migrations/      # Alembic migration files
-│   └── config.py            # 設定檔 (env vars, secrets)
+│   ├── models/           # SQLAlchemy models (Library, RealtimeSeatStatus, HistorySeatStatus)
+│   ├── services/         # 業務邏輯層 (fetcher, predictor, library_service)
+│   ├── api/              # FastAPI endpoints (/realtime, /predict, /libraries, /suggestions)
+│   ├── scheduler/        # APScheduler 排程任務
+│   └── core/             # 設定檔、資料庫連線、工具函式
 ├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── contract/            # API contract tests
-├── Dockerfile
-├── requirements.txt
-└── pyproject.toml
+│   ├── contract/         # API contract tests
+│   ├── integration/      # 資料庫、外部 API 整合測試
+│   └── unit/             # 業務邏輯單元測試
+├── pyproject.toml        # uv 專案設定檔
+├── uv.lock               # uv lock file
+└── alembic/              # 資料庫 migration
 
 frontend/
 ├── src/
-│   ├── components/
-│   │   ├── map/             # Mapbox 地圖相關元件
-│   │   ├── library-list/    # 右上角列表視窗
-│   │   ├── info-footer/     # 底部資訊框
-│   │   └── library-detail/  # 詳細視窗
-│   ├── pages/
-│   │   └── HomePage.tsx     # 主畫面
-│   ├── store/               # Redux Toolkit slices
-│   │   ├── librarySlice.ts
-│   │   ├── mapSlice.ts
-│   │   └── uiSlice.ts
-│   ├── services/            # API client
-│   │   └── api.ts
-│   ├── hooks/               # Custom React hooks
-│   │   ├── useGeolocation.ts
-│   │   └── useLibraryData.ts
-│   └── types/               # TypeScript 型別定義
+│   ├── components/       # React/Vue 元件 (Map, LibraryMarker, DetailWindow, LibraryList)
+│   ├── pages/            # 主頁面
+│   ├── services/         # API client、定位服務
+│   └── types/            # TypeScript 型別定義
 ├── tests/
-│   ├── unit/
-│   └── e2e/
-├── Dockerfile
-├── package.json
-└── vite.config.ts
-
-docker-compose.yml             # 本地開發環境（backend + frontend + postgres）
-README.md
+│   ├── unit/             # 元件單元測試
+│   └── e2e/              # End-to-end 測試
+└── package.json
 ```
 
-**結構決策**: Web 應用程式架構，分離 backend/frontend 目錄。
-- Backend 遵循分層架構：API routes → Services → Models → DB
-- Frontend 遵循功能導向的元件組織方式，搭配集中式狀態管理
-- 兩個服務均容器化，以確保部署到 GCP 的一致性
+**Structure Decision**: 採用 Web application 結構（Option 2），前後端分離。後端使用 FastAPI + SQLAlchemy + uv，前端使用現代化框架（React/Vue）+ TypeScript。此結構支援獨立開發、測試與部署，符合 Constitution 要求的清晰分層與測試覆蓋。
 
-## 複雜度追蹤
+## Complexity Tracking
 
-> **僅在專案憲章檢查有需要說明的違規時填寫**
+> **Fill ONLY if Constitution Check has violations that must be justified**
 
-N/A - 未發現複雜度違規。
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |

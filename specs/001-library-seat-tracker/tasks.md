@@ -33,8 +33,8 @@
 
 ### 1.2 Backend 初始化
 
-- [ ] T006 在 backend/ 初始化 Python 3.12 專案，包含 pyproject.toml
-- [ ] T007 在 backend/pyproject.toml 安裝 FastAPI, SQLAlchemy, Alembic, APScheduler, httpx 依賴項
+- [ ] T006 在 backend/ 使用 uv 初始化 Python 3.12 專案，包含 pyproject.toml
+- [ ] T007 使用 uv 在 backend/pyproject.toml 安裝 FastAPI, SQLAlchemy, Alembic, APScheduler, httpx 依賴項
 - [ ] T008 在 backend/alembic.ini 初始化 Alembic 設定
 - [ ] T009 [P] 建立 backend/src/main.py，包含 FastAPI app 初始化
 - [ ] T010 [P] 在 backend/pyproject.toml 設定 Ruff linter 與 formatter
