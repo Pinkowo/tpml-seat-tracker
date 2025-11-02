@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { MapView } from '@/components/map/MapView';
 import { InfoFooter } from '@/components/info-footer/InfoFooter';
 import { LibraryDetail } from '@/components/library-detail/LibraryDetail';
+import { LibraryList, type SortOption } from '@/components/library-list/LibraryList';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useLibraryData } from '@/hooks/useLibraryData';
 import type { LibraryWithSeat } from '@/types/library';
@@ -20,15 +21,24 @@ const getLatestUpdatedAt = (libraries: LibraryWithSeat[]) => {
 
 const HomePage = () => {
   const [selectedLibraryId, setSelectedLibraryId] = useState<number | null>(null);
+  const [sortBy, setSortBy] = useState<SortOption>('distance');
   const geolocation = useGeolocation();
   const { libraries, isLoading, isError, error } = useLibraryData(geolocation.location ?? undefined);
 
+  const lastUpdated = useMemo(() => getLatestUpdatedAt(libraries), [libraries]);
   const selectedLibrary = useMemo(
     () => libraries.find((library) => library.id === selectedLibraryId) ?? null,
     [libraries, selectedLibraryId]
   );
+  const needsLocationPrompt = Boolean(geolocation.error);
 
-  const lastUpdated = useMemo(() => getLatestUpdatedAt(libraries), [libraries]);
+  const handleSelectLibrary = (libraryId: number) => {
+    setSelectedLibraryId(libraryId);
+  };
+
+  const handleSortChange = (value: SortOption) => {
+    setSortBy(value);
+  };
 
   const hasGeoError = Boolean(geolocation.error);
   const geolocationMessage =
@@ -57,8 +67,9 @@ const HomePage = () => {
         <MapView
           libraries={libraries}
           selectedLibraryId={selectedLibraryId}
-          onMarkerClick={setSelectedLibraryId}
+          onMarkerClick={handleSelectLibrary}
           userLocation={geolocation.location}
+          focusLibrary={selectedLibrary}
         />
 
         {(isLoading || geolocation.loading) && (
@@ -78,6 +89,15 @@ const HomePage = () => {
           open={Boolean(selectedLibrary)}
           library={selectedLibrary}
           onClose={() => setSelectedLibraryId(null)}
+        />
+        <LibraryList
+          libraries={libraries}
+          selectedLibraryId={selectedLibraryId}
+          sortBy={sortBy}
+          onSortChange={handleSortChange}
+          onSelectLibrary={handleSelectLibrary}
+          showLocationPrompt={needsLocationPrompt}
+          onRequestLocation={geolocation.retry}
         />
       </main>
     </div>

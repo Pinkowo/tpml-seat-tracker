@@ -10,17 +10,20 @@ interface MapViewProps {
   selectedLibraryId: number | null;
   onMarkerClick: (libraryId: number) => void;
   userLocation?: { lat: number; lng: number } | null;
+  focusLibrary?: LibraryWithSeat | null;
 }
 
 export const MapView = ({
   libraries,
   selectedLibraryId,
   onMarkerClick,
-  userLocation
+  userLocation,
+  focusLibrary
 }: MapViewProps) => {
   const mapNode = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapboxMap | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const lastFocusedLibraryId = useRef<number | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -97,6 +100,26 @@ export const MapView = ({
       speed: 1.4
     });
   }, [userLocation]);
+
+  useEffect(() => {
+    if (!mapRef.current || !focusLibrary) {
+      if (!focusLibrary) {
+        lastFocusedLibraryId.current = null;
+      }
+      return;
+    }
+
+    if (lastFocusedLibraryId.current === focusLibrary.id) {
+      return;
+    }
+
+    mapRef.current.flyTo({
+      center: [focusLibrary.longitude, focusLibrary.latitude],
+      zoom: Math.max(mapRef.current.getZoom(), 13),
+      speed: 1.2
+    });
+    lastFocusedLibraryId.current = focusLibrary.id;
+  }, [focusLibrary]);
 
   if (!accessToken) {
     return (

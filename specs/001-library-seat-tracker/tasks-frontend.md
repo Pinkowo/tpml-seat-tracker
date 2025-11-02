@@ -298,7 +298,7 @@
 
 ### 4.1 UI 元件（可平行執行）
 
-- [ ] T052 [P] [US2] 在 frontend/src/components/library-list/LibraryList.tsx 建立可收合的圖書館列表容器 in frontend/src/components/library-list/LibraryList.tsx
+- [x] T052 [P] [US2] 在 frontend/src/components/library-list/LibraryList.tsx 建立可收合的圖書館列表容器 in frontend/src/components/library-list/LibraryList.tsx
   - **設計規範**: 參考 `specs/design/components.md` - 底部滑動面板 (Bottom Sheet)
   - **位置**: Fixed bottom（Mobile）/ Fixed top-right（Desktop）
   - **狀態**:
@@ -314,7 +314,7 @@
     - 拖曳跟隨手指
   - **內容**: 圖書館卡片列表（可捲動）
 
-- [ ] T052a [P] [US2] 在 frontend/src/components/library-list/LibraryCard.tsx 建立圖書館卡片元件 in frontend/src/components/library-list/LibraryCard.tsx
+- [x] T052a [P] [US2] 在 frontend/src/components/library-list/LibraryCard.tsx 建立圖書館卡片元件 in frontend/src/components/library-list/LibraryCard.tsx
   - **設計規範**: 參考 `specs/design/components.md` - 圖書館卡片 (Library Card)
   - **圓角**: 16px
   - **內距**: 20px
@@ -332,7 +332,7 @@
     - 已滿: 背景 `#E3E7E9` (Grey/100)，文字 `#91A0A8` (Grey/400)
   - **距離標籤**: 12px/Regular，顏色 `#91A0A8`
 
-- [ ] T053 [P] [US2] 在 frontend/src/components/library-list/SortToggle.tsx 建立排序切換按鈕元件 in frontend/src/components/library-list/SortToggle.tsx
+- [x] T053 [P] [US2] 在 frontend/src/components/library-list/SortToggle.tsx 建立排序切換按鈕元件 in frontend/src/components/library-list/SortToggle.tsx
   - **設計規範**: 參考 `specs/design/components.md` - 按鈕元件
   - **選項**: "依距離" / "依可用座位"
   - **UI**: Toggle button group
@@ -341,7 +341,7 @@
   - **Inactive 狀態**: 背景透明，文字主色
   - **State**: sortBy state ("distance" | "seats")
 
-- [ ] T054 [P] [US2] 在 frontend/src/components/library-list/LocationPrompt.tsx 建立位置權限提示 UI in frontend/src/components/library-list/LocationPrompt.tsx
+- [x] T054 [P] [US2] 在 frontend/src/components/library-list/LocationPrompt.tsx 建立位置權限提示 UI in frontend/src/components/library-list/LocationPrompt.tsx
   - **設計規範**: 參考 `specs/design/design-tokens.css` - 提醒色
   - **情境**: 選擇「依距離」但無位置權限
   - **背景**: 提醒色淡化 `rgba(253, 133, 58, 0.1)` (Orange/500 alpha 0.1)
@@ -353,7 +353,7 @@
     - 按鈕圓角: 8px
     - 按鈕內距: 8px 16px
 
-- [ ] T055 [P] [US2] 在 frontend/src/utils/format.ts 建立距離格式化工具（m vs km，1000m 臨界值） in frontend/src/utils/format.ts
+- [x] T055 [P] [US2] 在 frontend/src/utils/format.ts 建立距離格式化工具（m vs km，1000m 臨界值） in frontend/src/utils/format.ts
   - **函式**: `formatDistance(meters: number) => string`
   - **邏輯**:
     - < 1000m: "XXX m"
@@ -361,7 +361,7 @@
 
 ### 4.2 狀態管理與整合
 
-- [ ] T056 [US2] 在 frontend/src/pages/HomePage.tsx 整合圖書館列表與地圖狀態同步 in frontend/src/pages/HomePage.tsx
+- [x] T056 [US2] 在 frontend/src/pages/HomePage.tsx 整合圖書館列表與地圖狀態同步 in frontend/src/pages/HomePage.tsx
   - **⚠️ 依賴**: T052-T054 完成
   - **State sync**:
     - 點擊列表項目 → 地圖 center 到該館 + 開啟 modal
@@ -370,7 +370,7 @@
 
 ### 4.3 測試 (US2)
 
-- [ ] T056c [P] [US2] 在 frontend/tests/integration/test_library_list.test.ts 撰寫列表排序行為的 integration tests in frontend/tests/integration/test_library_list.test.ts
+- [x] T056c [P] [US2] 在 frontend/tests/integration/test_library_list.test.ts 撰寫列表排序行為的 integration tests in frontend/tests/integration/test_library_list.test.ts
   - **測試案例**:
     - 排序切換更新列表
     - 點擊列表項目同步地圖
