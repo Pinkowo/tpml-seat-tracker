@@ -522,19 +522,19 @@
 
 ### 7.1 輪詢與刷新邏輯（可平行執行）
 
-- [ ] T086 [P] [US5] 在 frontend/src/main.tsx 設定 React Query，10 分鐘重新拉取間隔 in frontend/src/main.tsx
+- [x] T086 [P] [US5] 在 frontend/src/main.tsx 設定 React Query，10 分鐘重新拉取間隔 in frontend/src/main.tsx
   - **QueryClient config**:
     - refetchInterval: 600000 (10 分鐘)
     - refetchOnWindowFocus: true
     - staleTime: 600000
 
-- [ ] T087 [P] [US5] 在 frontend/src/hooks/useVisibilityRefresh.ts 實作 Page Visibility API 整合，當頁面隱藏時暫停輪詢 in frontend/src/hooks/useVisibilityRefresh.ts
+- [x] T087 [P] [US5] 在 frontend/src/hooks/useVisibilityRefresh.ts 實作 Page Visibility API 整合，當頁面隱藏時暫停輪詢 in frontend/src/hooks/useVisibilityRefresh.ts
   - **功能**: 監聽 visibilitychange event
   - **邏輯**:
     - 頁面隱藏 → pause queries
     - 頁面顯示 → resume queries + refetch
 
-- [ ] T088 [P] [US5] 在 frontend/src/components/RefreshButton.tsx 建立手動刷新按鈕元件 in frontend/src/components/RefreshButton.tsx
+- [x] T088 [P] [US5] 在 frontend/src/components/RefreshButton.tsx 建立手動刷新按鈕元件 in frontend/src/components/RefreshButton.tsx
   - **設計規範**: 參考 `specs/design/components.md` - 按鈕元件
   - **尺寸**: 48x48px 圓形按鈕
   - **背景**: 主色 `#5AB4C5` (Primary/500)
@@ -544,7 +544,7 @@
   - **功能**: 點擊 → invalidate all queries → refetch
   - **UI**: Refresh icon + loading spinner（旋轉動畫）
 
-- [ ] T089 [P] [US5] 在 frontend/src/components/StaleDataWarning.tsx 建立過期資料警告（15min 臨界值） in frontend/src/components/StaleDataWarning.tsx
+- [x] T089 [P] [US5] 在 frontend/src/components/StaleDataWarning.tsx 建立過期資料警告（15min 臨界值） in frontend/src/components/StaleDataWarning.tsx
   - **設計規範**: 參考 `specs/design/design-tokens.css` - 提醒色
   - **實作 FR-032**: 資料過期提示
   - **背景**: 提醒色淡化 `rgba(253, 133, 58, 0.1)` (Orange/500 alpha 0.1)
@@ -560,16 +560,16 @@
 
 ### 7.2 整合
 
-- [ ] T090 [US5] 在 frontend/src/components/library-list/LibraryList.tsx 新增載入狀態與樂觀更新到圖書館列表 in frontend/src/components/library-list/LibraryList.tsx
+- [x] T090 [US5] 在 frontend/src/components/library-list/LibraryList.tsx 新增載入狀態與樂觀更新到圖書館列表 in frontend/src/components/library-list/LibraryList.tsx
   - **Loading state**: 列表頂部顯示 loading bar
   - **Optimistic update**: Refetch 時不移除現有資料，等新資料到達才更新
 
 ### 7.3 測試 (US5)
 
-- [ ] T090a [P] [US5] 在 frontend/tests/integration/test_polling.test.ts 撰寫 10 分鐘輪詢行為的 integration tests in frontend/tests/integration/test_polling.test.ts
+- [x] T090a [P] [US5] 在 frontend/tests/integration/test_polling.test.ts 撰寫 10 分鐘輪詢行為的 integration tests in frontend/tests/integration/test_polling.test.ts
   - **測試案例**: 使用 fake timers 驗證 10 分鐘後 refetch
 
-- [ ] T090b [P] [US5] 在 frontend/tests/unit/hooks/test_useVisibilityRefresh.test.ts 撰寫 Page Visibility API 整合的 unit tests in frontend/tests/unit/hooks/test_useVisibilityRefresh.test.ts
+- [x] T090b [P] [US5] 在 frontend/tests/unit/hooks/test_useVisibilityRefresh.test.ts 撰寫 Page Visibility API 整合的 unit tests in frontend/tests/unit/hooks/test_useVisibilityRefresh.test.ts
   - **測試案例**: 模擬 visibilitychange event
 
 **檢查點**: US5 前端完成 - 自動更新正常運作

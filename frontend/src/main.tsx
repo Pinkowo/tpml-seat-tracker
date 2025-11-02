@@ -10,8 +10,11 @@ import { store } from './store';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
-      staleTime: 0
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+      staleTime: 10 * 60 * 1000,
+      refetchInterval: 10 * 60 * 1000,
+      refetchIntervalInBackground: true
     }
   }
 });

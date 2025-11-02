@@ -60,6 +60,7 @@ const renderList = (overrides?: Partial<React.ComponentProps<typeof LibraryList>
     sortBy: 'distance',
     onSortChange,
     onSelectLibrary,
+    isRefreshing: false,
     showLocationPrompt: false,
     onRequestLocation,
     ...overrides
@@ -84,6 +85,7 @@ describe('LibraryList', () => {
           rerender(<Wrapper />);
         }}
         onSelectLibrary={vi.fn()}
+        isRefreshing={false}
         showLocationPrompt={false}
         onRequestLocation={vi.fn()}
       />

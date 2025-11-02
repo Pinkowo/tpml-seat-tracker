@@ -25,8 +25,8 @@ export const useLibraries = (coordinates?: { lat: number; lng: number }) =>
       await simulatedDelay();
       return buildLibrariesWithDistance(coordinates);
     },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000
+    gcTime: 10 * 60 * 1000,
+    placeholderData: (previousData) => previousData
   });
 
 export const useRealtimeSeats = () =>
@@ -36,8 +36,7 @@ export const useRealtimeSeats = () =>
       await simulatedDelay(150);
       return mockSeatStatuses;
     },
-    refetchInterval: 60 * 1000,
-    staleTime: 30 * 1000
+    placeholderData: (previousData) => previousData
   });
 
 export const useLibraryData = (coordinates?: { lat: number; lng: number }) => {
@@ -45,24 +44,23 @@ export const useLibraryData = (coordinates?: { lat: number; lng: number }) => {
   const seatsQuery = useRealtimeSeats();
 
   const mergedData = useMemo<LibraryWithSeat[]>(() => {
-    if (!librariesQuery.data) {
-      return [];
-    }
+    const baseLibraries = librariesQuery.data ?? [];
+    const seatData = seatsQuery.data ?? [];
 
-    return librariesQuery.data.map((library) => ({
+    return baseLibraries.map((library) => ({
       ...library,
-      seatStatus: seatsQuery.data?.find((seat) => seat.library.id === library.id)
+      seatStatus: seatData.find((seat) => seat.library.id === library.id)
     }));
   }, [librariesQuery.data, seatsQuery.data]);
 
   return {
     libraries: mergedData,
     isLoading: librariesQuery.isLoading || seatsQuery.isLoading,
+    isFetching: librariesQuery.isFetching || seatsQuery.isFetching,
     isError: librariesQuery.isError || seatsQuery.isError,
     error: librariesQuery.error ?? seatsQuery.error,
-    refetch: () => {
-      void librariesQuery.refetch();
-      void seatsQuery.refetch();
+    refetch: async () => {
+      await Promise.all([librariesQuery.refetch(), seatsQuery.refetch()]);
     }
   };
 };

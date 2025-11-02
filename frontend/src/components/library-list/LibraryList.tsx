@@ -13,6 +13,7 @@ interface LibraryListProps {
   sortBy: SortOption;
   onSortChange: (value: SortOption) => void;
   onSelectLibrary: (libraryId: number) => void;
+  isRefreshing: boolean;
   showLocationPrompt: boolean;
   onRequestLocation: () => void;
 }
@@ -25,6 +26,7 @@ export const LibraryList = ({
   sortBy,
   onSortChange,
   onSelectLibrary,
+  isRefreshing,
   showLocationPrompt,
   onRequestLocation
 }: LibraryListProps) => {
@@ -61,8 +63,14 @@ export const LibraryList = ({
         }
       )}
       aria-expanded={sheetState === 'expanded'}
+      aria-busy={isRefreshing}
     >
-      <div className="rounded-t-3xl bg-white pb-6 shadow-sheet sm:rounded-3xl">
+      <div className="relative rounded-t-3xl bg-white pb-6 shadow-sheet sm:rounded-3xl">
+        {isRefreshing && (
+          <div className="absolute left-0 right-0 top-0 h-1 overflow-hidden rounded-t-3xl bg-primary/20">
+            <div className="h-full w-full animate-pulse bg-primary" />
+          </div>
+        )}
         <div className="flex flex-col gap-4 border-b border-gray-100 px-5 pb-4 pt-3">
           <button
             type="button"
