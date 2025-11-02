@@ -4,6 +4,8 @@ import clsx from 'clsx';
 import type { LibraryWithSeat } from '@/types/library';
 import { OpeningHours } from './OpeningHours';
 import { ClosingWarning } from './ClosingWarning';
+import { PredictionSection } from './PredictionSection';
+import { usePredictions } from '@/hooks/usePredictions';
 
 interface LibraryDetailProps {
   open: boolean;
@@ -28,6 +30,7 @@ const getSeatText = (available?: number, total?: number) => {
 
 export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) => {
   const modalRoot = typeof document === 'undefined' ? null : document.body;
+  const predictionsQuery = usePredictions(library?.id ?? null, open);
 
   useEffect(() => {
     if (!open || typeof document === 'undefined') {
@@ -152,6 +155,12 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
 
           <OpeningHours operatingHours={operatingHours} isOpen={isOpen} />
           <ClosingWarning closingInMinutes={operatingHours?.closesInMinutes ?? null} />
+          <PredictionSection
+            data={predictionsQuery.data}
+            isLoading={predictionsQuery.isLoading}
+            isError={predictionsQuery.isError}
+            onRetry={() => predictionsQuery.refetch()}
+          />
 
           <div className={clsx('space-y-4', isOpen ? 'text-gray-700' : 'text-gray-500')}>
             <div>

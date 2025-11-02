@@ -454,11 +454,11 @@
 
 ### 6.1 Types 與 Hooks（可平行執行）
 
-- [ ] T080 [P] [US4] 在 frontend/src/hooks/usePredictions.ts 使用 React Query 建立 usePredictions hook in frontend/src/hooks/usePredictions.ts
+- [x] T080 [P] [US4] 在 frontend/src/hooks/usePredictions.ts 使用 React Query 建立 usePredictions hook in frontend/src/hooks/usePredictions.ts
   - **Query**: `usePredictions(branchName)` → GET /api/v1/predict?branch_name=XXX
   - **Options**: enabled（只在 modal 開啟時呼叫）
 
-- [ ] T081 [P] [US4] 在 frontend/src/types/prediction.ts 新增預測的 TypeScript types in frontend/src/types/prediction.ts
+- [x] T081 [P] [US4] 在 frontend/src/types/prediction.ts 新增預測的 TypeScript types in frontend/src/types/prediction.ts
   - **Types**:
     ```typescript
     interface PredictionItem {
@@ -475,7 +475,7 @@
 
 ### 6.2 UI 元件（可平行執行）
 
-- [ ] T078 [P] [US4] 在 frontend/src/components/library-detail/PredictionSection.tsx 建立圖書館詳細資訊 modal 的預測顯示區塊 in frontend/src/components/library-detail/PredictionSection.tsx
+- [x] T078 [P] [US4] 在 frontend/src/components/library-detail/PredictionSection.tsx 建立圖書館詳細資訊 modal 的預測顯示區塊 in frontend/src/components/library-detail/PredictionSection.tsx
   - **設計規範**: 參考 `specs/design/components.md` - 詳細資訊頁面的資訊卡片樣式
   - **標題**: H2 (24px/Semibold) - "座位預測"
   - **卡片**:
@@ -493,7 +493,7 @@
   - **Loading state**: Skeleton or spinner
   - **Error state**: "預測資料暫時無法取得"
 
-- [ ] T079 [P] [US4] 在 frontend/src/components/library-detail/FallbackBadge.tsx 建立 fallback「估」badge 元件 in frontend/src/components/library-detail/FallbackBadge.tsx
+- [x] T079 [P] [US4] 在 frontend/src/components/library-detail/FallbackBadge.tsx 建立 fallback「估」badge 元件 in frontend/src/components/library-detail/FallbackBadge.tsx
   - **設計規範**: 參考 `specs/design/components.md` - 狀態標籤
   - **顯示條件**: is_fallback=true
   - **背景**: 次要色淡化 `rgba(245, 186, 75, 0.1)` (Secondary/500 alpha 0.1)
