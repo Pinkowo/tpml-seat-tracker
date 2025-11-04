@@ -43,7 +43,7 @@
 
 - [x] T011 在 frontend/ 初始化 Vite + React + TypeScript 專案
 - [x] T012 在 frontend/package.json 安裝依賴項: Mapbox GL JS, React Query, @reduxjs/toolkit react-redux, Tailwind CSS
-- [ ] T012a [P] 在 frontend/src/index.html 引入 Town Pass 設計系統
+- [x] T012a [P] 在 frontend/src/index.html 引入 Town Pass 設計系統
   - **設計規範**: 引入 `specs/design/design-tokens.css` 到專案
   - **用途**: 提供完整的 Town Pass 色彩系統、字體、間距等 CSS 變數
   - **文件**: 參考 `specs/design/README.md` 了解如何使用設計變數
@@ -61,7 +61,7 @@
 - [x] T015c [P] 建立 backend/tests/ 目錄結構 (unit/, integration/, contract/, conftest.py)
 - [x] T015d [P] 建立 frontend/tests/ 目錄結構 (unit/, integration/, setup.ts)
 - [x] T015e [P] 在 backend/ 設定 pytest.ini
-- [ ] T015f [P] 在 frontend/ 設定 vitest.config.ts
+- [x] T015f [P] 在 frontend/ 設定 vitest.config.ts
 
 ---
 
@@ -93,7 +93,7 @@
 ### 2.3 Frontend 核心架構
 
 - [x] T029 [P] 在 frontend/src/App.tsx 建立 App.tsx，包含 React Router 設定
-- [ ] T030 [P] 在 frontend/src/store/index.ts 使用 Redux Toolkit 建立 Redux store 設定
+- [x] T030 [P] 在 frontend/src/store/index.ts 使用 Redux Toolkit 建立 Redux store 設定
 - [x] T031 [P] 在 frontend/src/main.tsx 建立 React Query provider 設定
 - [x] T032 [P] 在 frontend/src/services/api.ts 建立 axios instance，包含 base URL 設定
 - [x] T033 [P] 在 frontend/src/types/api.ts 建立 API 回應的 TypeScript types
@@ -173,7 +173,7 @@
 
 **Frontend 整合任務**:
 
-- [ ] T106 [P] [US1] 在 frontend/src/types/api.ts 定義 Backend API 回應型別
+- [x] T106 [P] [US1] 在 frontend/src/types/api.ts 定義 Backend API 回應型別
   - **目標**: 根據 backend schemas 定義 `LibrariesResponse`, `RealtimeResponse`, `PredictionResponse`
   - **參考**: backend/src/api/schemas.py 的 Pydantic models
   - **包含欄位**:
@@ -181,13 +181,13 @@
     - RealtimeResponse: `data[]` (branch_name, total_free_count, total_seat_count, usage_rate, last_updated, batch_id)
     - PredictionResponse: library_id, predictions[] (horizon_minutes, predicted_seats, is_fallback)
 
-- [ ] T107 [US1] 在 frontend/src/services/libraryApi.ts 建立 API 呼叫函式
+- [x] T107 [US1] 在 frontend/src/services/libraryApi.ts 建立 API 呼叫函式
   - **目標**: 建立 `fetchLibraries()`, `fetchRealtimeSeats()`, `fetchPredictions()` 函式
   - **使用**: `getApiClient()` from `@/services/api.ts`
   - **錯誤處理**: 包含 try-catch 與錯誤日誌記錄
   - **回傳型別**: 使用 T106 定義的型別
 
-- [ ] T108 [US1] 修改 frontend/src/hooks/useLibraryData.ts 連接真實 API
+- [x] T108 [US1] 修改 frontend/src/hooks/useLibraryData.ts 連接真實 API
   - **移除**: `import { mockLibraries, mockSeatStatuses, simulatedDelay }` 相關程式碼
   - **新增**: 使用 `libraryApi.fetchLibraries()` 和 `libraryApi.fetchRealtimeSeats()`
   - **queryFn**: 改為呼叫真實 API 而非回傳 mock 資料
@@ -198,14 +198,14 @@
     - Backend `current_seats.total` → Frontend `seatStatus.total_seats`
     - Backend `distance_km` → Frontend `distance` (轉換為公尺: km * 1000)
 
-- [ ] T109 [P] [US1] 修改 frontend/src/hooks/usePredictions.ts 連接真實 API
+- [x] T109 [P] [US1] 修改 frontend/src/hooks/usePredictions.ts 連接真實 API
   - **移除**: `import { simulatedDelay }` 相關程式碼
   - **新增**: 使用 `libraryApi.fetchPredictions(libraryId)`
   - **queryFn**: 改為呼叫真實 API 而非回傳 mock 資料
   - **參數**: 根據 library ID 查找 branch_name 並傳給 backend
   - **條件查詢**: 僅在 `libraryId !== null` 且 modal `open === true` 時執行
 
-- [ ] T110 [US1] 在 frontend/src/utils/apiAdapter.ts 建立 API 資料轉換器
+- [x] T110 [US1] 在 frontend/src/utils/apiAdapter.ts 建立 API 資料轉換器
   - **目標**: 統一處理 backend 與 frontend 資料格式差異
   - **函式**:
     - `adaptLibraryResponse()`: 轉換 backend library 格式為 frontend Library 型別
@@ -213,7 +213,7 @@
     - `calculateOperatingHours()`: 根據 open_hours 與 closing_in_minutes 計算前端所需的 operatingHours 物件
   - **處理**: 欄位名稱對應、單位轉換（km→m）、null 值處理
 
-- [ ] T111 [US1] 驗證前後端整合並移除 mock 資料檔案
+- [x] T111 [US1] 驗證前後端整合並移除 mock 資料檔案
   - **測試**: 啟動 backend (`uv run uvicorn src.main:app`)，確認 frontend 能正確拉取資料
   - **驗證項目**:
     - ✓ 地圖標記正確顯示所有圖書館
@@ -381,7 +381,7 @@
 
 ### 7.1 Backend - 排程任務
 
-- [ ] T082 [US5] 在 backend/src/main.py 的 FastAPI startup event 初始化 APScheduler
+- [x] T082 [US5] 在 backend/src/main.py 的 FastAPI startup event 初始化 APScheduler
 - [x] T083 [US5] 在 backend/src/services/library_sync.py 建立圖書館 metadata 同步服務（Task C）
 - [x] T084 [US5] 在 backend/src/services/scheduler.py 建立 APScheduler job，每日 02:00 同步圖書館資料
 - [x] T085 [P] [US5] 在 backend/src/services/retry.py 新增完整的重試邏輯，1 分鐘間隔（最多 3 次嘗試）
@@ -420,7 +420,7 @@
 
 ### 8.1 API 健康檢查與文件
 
-- [ ] T091 [P] 在 backend/src/api/routes/health.py 建立 GET /api/v1/health endpoint，包含資料庫檢查
+- [x] T091 [P] 在 backend/src/api/routes/health.py 建立 GET /api/v1/health endpoint，包含資料庫檢查
 - [ ] T092 [P] 在 backend/src/main.py 設定 FastAPI OpenAPI 文件 metadata
 - [ ] T093 [P] 在 backend/src/api/routes/ 新增 API endpoint 描述與範例
 
@@ -429,7 +429,7 @@
 - [ ] T094 [P] 在 backend/src/main.py 新增 request duration metrics middleware
 - [ ] T095 [P] 在 backend/src/services/error_tracking.py 設定錯誤追蹤整合點
 - [ ] T096 [P] 在 backend/alembic/versions/006_add_indexes.py 新增資料庫查詢最佳化索引
-- [ ] T097 [P] 在 frontend/src/services/errorLogger.ts 實作前端錯誤日誌服務
+- [x] T097 [P] 在 frontend/src/services/errorLogger.ts 實作前端錯誤日誌服務
 
 ### 8.3 測試與驗證
 

@@ -30,7 +30,7 @@ const getSeatText = (available?: number, total?: number) => {
 
 export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) => {
   const modalRoot = typeof document === 'undefined' ? null : document.body;
-  const predictionsQuery = usePredictions(library?.id ?? null, open);
+  const predictionsQuery = usePredictions(library?.name ?? null, open);
   const modalContainerRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocusedElement = useRef<Element | null>(null);

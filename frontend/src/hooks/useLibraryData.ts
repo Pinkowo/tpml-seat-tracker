@@ -1,66 +1,52 @@
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { Library, LibraryWithSeat, SeatStatus } from '@/types/library';
-import { calculateDistanceInMeters } from '@/utils/geo';
-import { mockLibraries, mockSeatStatuses, simulatedDelay } from '@/mocks/libraryData';
+import type { LibraryWithSeat } from '@/types/library';
+import { fetchLibraries } from '@/services/libraryApi';
+import { mergeLibrariesWithSeats } from '@/utils/apiAdapter';
 
-const buildLibrariesWithDistance = (coordinates?: { lat: number; lng: number }) => {
-  if (!coordinates) {
-    return mockLibraries;
-  }
-
-  return mockLibraries.map((library) => ({
-    ...library,
-    distance: calculateDistanceInMeters(coordinates, {
-      lat: library.latitude,
-      lng: library.longitude
-    })
-  }));
-};
-
+/**
+ * 使用 Libraries API 取得圖書館資料
+ *
+ * 此 hook 會根據使用者座標呼叫 backend /api/v1/libraries 端點
+ * 並將回應轉換為前端所需的資料格式
+ */
 export const useLibraries = (coordinates?: { lat: number; lng: number }) =>
-  useQuery<Library[]>({
+  useQuery<LibraryWithSeat[]>({
     queryKey: ['libraries', coordinates?.lat, coordinates?.lng],
     queryFn: async () => {
-      await simulatedDelay();
-      return buildLibrariesWithDistance(coordinates);
+      // 檢查是否有完整的座標資訊
+      const hasCoordinates = coordinates?.lat !== undefined && coordinates?.lng !== undefined;
+
+      // 呼叫真實的 backend API
+      const response = await fetchLibraries({
+        user_lat: hasCoordinates ? coordinates.lat : undefined,
+        user_lng: hasCoordinates ? coordinates.lng : undefined,
+        sort_by: hasCoordinates ? 'distance' : 'seats', // 有座標時依距離排序，否則依座位數
+      });
+
+      // 轉換 backend 回應為 frontend 格式
+      // /libraries API 已經包含 current_seats，不需要額外呼叫 /realtime
+      return mergeLibrariesWithSeats(response.data);
     },
-    gcTime: 10 * 60 * 1000,
-    placeholderData: (previousData) => previousData
+    gcTime: 10 * 60 * 1000, // 快取 10 分鐘
+    staleTime: 5 * 60 * 1000, // 5 分鐘內視為新鮮資料
+    placeholderData: (previousData) => previousData,
+    refetchInterval: 10 * 60 * 1000, // 每 10 分鐘自動重新拉取
   });
 
-export const useRealtimeSeats = () =>
-  useQuery<SeatStatus[]>({
-    queryKey: ['realtime-seats'],
-    queryFn: async () => {
-      await simulatedDelay(150);
-      return mockSeatStatuses;
-    },
-    placeholderData: (previousData) => previousData
-  });
-
+/**
+ * 整合的 Library Data Hook
+ *
+ * 提供完整的圖書館資料，包含座位資訊、營業時間等
+ */
 export const useLibraryData = (coordinates?: { lat: number; lng: number }) => {
   const librariesQuery = useLibraries(coordinates);
-  const seatsQuery = useRealtimeSeats();
-
-  const mergedData = useMemo<LibraryWithSeat[]>(() => {
-    const baseLibraries = librariesQuery.data ?? [];
-    const seatData = seatsQuery.data ?? [];
-
-    return baseLibraries.map((library) => ({
-      ...library,
-      seatStatus: seatData.find((seat) => seat.library.id === library.id)
-    }));
-  }, [librariesQuery.data, seatsQuery.data]);
 
   return {
-    libraries: mergedData,
-    isLoading: librariesQuery.isLoading || seatsQuery.isLoading,
-    isFetching: librariesQuery.isFetching || seatsQuery.isFetching,
-    isError: librariesQuery.isError || seatsQuery.isError,
-    error: librariesQuery.error ?? seatsQuery.error,
-    refetch: async () => {
-      await Promise.all([librariesQuery.refetch(), seatsQuery.refetch()]);
-    }
+    libraries: librariesQuery.data ?? [],
+    isLoading: librariesQuery.isLoading,
+    isFetching: librariesQuery.isFetching,
+    isError: librariesQuery.isError,
+    error: librariesQuery.error,
+    refetch: librariesQuery.refetch,
   };
 };
