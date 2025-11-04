@@ -41,7 +41,7 @@
 
 ### 任務清單
 
-- [ ] T003 [P] 建立 docker-compose.yml，包含 PostgreSQL 15 服務定義 in docker-compose.yml
+- [x] T003 [P] 建立 docker-compose.yml，包含 PostgreSQL 15 服務定義 in docker-compose.yml
   - **協調**: 需與後端團隊確認服務名稱、port、環境變數
   - **檢查項目**:
     - PostgreSQL 15 image
@@ -63,30 +63,30 @@
 
 ### 2.1 Migration Scripts（可平行執行）
 
-- [ ] T016 建立 library_info 資料表的 migration script in backend/alembic/versions/001_create_library_info.py
+- [x] T016 建立 library_info 資料表的 migration script in backend/alembic/versions/001_create_library_info.py
   - **欄位**: library_id (PK), name, address, latitude, longitude, operating_hours (JSONB), created_at, updated_at
   - **索引**: PRIMARY KEY (library_id)
 
-- [ ] T017 建立 seat_realtime 資料表的 migration script in backend/alembic/versions/002_create_seat_realtime.py
+- [x] T017 建立 seat_realtime 資料表的 migration script in backend/alembic/versions/002_create_seat_realtime.py
   - **欄位**: id (PK), library_id (FK), available_seats, total_seats, updated_at, batch_id
   - **索引**: PRIMARY KEY (id), FOREIGN KEY (library_id) REFERENCES library_info(library_id)
   - **約束**: UNIQUE (library_id)（每個圖書館只有一筆即時資料）
 
-- [ ] T018 建立 seat_history 資料表的 migration script in backend/alembic/versions/003_create_seat_history.py
+- [x] T018 建立 seat_history 資料表的 migration script in backend/alembic/versions/003_create_seat_history.py
   - **欄位**: id (PK), library_id (FK), available_seats, total_seats, recorded_at, batch_id
   - **索引**: PRIMARY KEY (id), FOREIGN KEY (library_id) REFERENCES library_info(library_id), INDEX (library_id, recorded_at)
 
-- [ ] T019 建立 prediction_results 資料表的 migration script in backend/alembic/versions/004_create_prediction_results.py
+- [x] T019 建立 prediction_results 資料表的 migration script in backend/alembic/versions/004_create_prediction_results.py
   - **欄位**: id (PK), library_id (FK), prediction_time, predicted_seats, horizon_minutes (30 or 60), model_version, created_at
   - **索引**: PRIMARY KEY (id), FOREIGN KEY (library_id) REFERENCES library_info(library_id), INDEX (library_id, prediction_time)
 
-- [ ] T020 建立 model_registry 資料表的 migration script in backend/alembic/versions/005_create_model_registry.py
+- [x] T020 建立 model_registry 資料表的 migration script in backend/alembic/versions/005_create_model_registry.py
   - **欄位**: id (PK), library_id (FK), model_type (Prophet/RandomForest/LSTM), version, status (champion/challenger/archived), mape, created_at, activated_at
   - **索引**: PRIMARY KEY (id), FOREIGN KEY (library_id) REFERENCES library_info(library_id), INDEX (library_id, status)
 
 ### 2.2 連線池設定
 
-- [ ] T021 建立資料庫連線池設定 in backend/src/db/connection.py
+- [x] T021 建立資料庫連線池設定 in backend/src/db/connection.py
   - **設定項目**:
     - Connection pool size: 5-20
     - Max overflow: 10
@@ -94,7 +94,7 @@
     - Pool recycle: 3600 seconds
   - **環境變數**: DATABASE_URL
 
-- [ ] T022 建立 async session factory，包含 context manager in backend/src/db/session.py
+- [x] T022 建立 async session factory，包含 context manager in backend/src/db/session.py
   - **實作**: AsyncSession with async context manager
   - **使用方式**: `async with get_db_session() as session:`
 
@@ -110,13 +110,13 @@
 
 ### 任務清單（可平行執行）
 
-- [ ] T035 [P] [US1] 建立 Library SQLAlchemy model in backend/src/models/library.py
+- [x] T035 [P] [US1] 建立 Library SQLAlchemy model in backend/src/models/library.py
   - **對應資料表**: library_info
   - **欄位映射**: 對應 T016 建立的 library_info 資料表
   - **關聯**: relationship to SeatRealtime (one-to-one)
   - **方法**: `to_dict()` for serialization
 
-- [ ] T036 [P] [US1] 建立 SeatRealtime SQLAlchemy model in backend/src/models/seat.py
+- [x] T036 [P] [US1] 建立 SeatRealtime SQLAlchemy model in backend/src/models/seat.py
   - **對應資料表**: seat_realtime
   - **欄位映射**: 對應 T017 建立的 seat_realtime 資料表
   - **關聯**: relationship to Library (many-to-one)
@@ -134,19 +134,19 @@
 
 ### 任務清單（可平行執行）
 
-- [ ] T064 [P] [US4] 建立 SeatHistory SQLAlchemy model in backend/src/models/seat.py
+- [x] T064 [P] [US4] 建立 SeatHistory SQLAlchemy model in backend/src/models/seat.py
   - **對應資料表**: seat_history
   - **欄位映射**: 對應 T018 建立的 seat_history 資料表
   - **關聯**: relationship to Library (many-to-one)
   - **查詢方法**: `get_history_by_library(library_id, start_time, end_time)`
 
-- [ ] T065 [P] [US4] 建立 PredictionResult SQLAlchemy model in backend/src/models/prediction.py
+- [x] T065 [P] [US4] 建立 PredictionResult SQLAlchemy model in backend/src/models/prediction.py
   - **對應資料表**: prediction_results
   - **欄位映射**: 對應 T019 建立的 prediction_results 資料表
   - **關聯**: relationship to Library (many-to-one)
   - **查詢方法**: `get_latest_prediction(library_id, horizon_minutes)`
 
-- [ ] T066 [P] [US4] 建立 ModelRegistry SQLAlchemy model in backend/src/models/model_registry.py
+- [x] T066 [P] [US4] 建立 ModelRegistry SQLAlchemy model in backend/src/models/prediction.py
   - **對應資料表**: model_registry
   - **欄位映射**: 對應 T020 建立的 model_registry 資料表
   - **關聯**: relationship to Library (many-to-one)
@@ -164,7 +164,7 @@
 
 ### 任務清單
 
-- [ ] T096 [P] 新增資料庫查詢最佳化索引 in backend/alembic/versions/006_add_indexes.py
+- [x] T096 [P] 新增資料庫查詢最佳化索引 in backend/alembic/versions/006_add_indexes.py
   - **seat_history**:
     - INDEX (library_id, recorded_at DESC) - 用於時間範圍查詢
     - INDEX (batch_id) - 用於批次查詢
@@ -187,7 +187,7 @@
 
 ### 任務清單
 
-- [ ] T048a [P] [US1] 建立資料庫 session 的 pytest fixtures in backend/tests/conftest.py
+- [x] T048a [P] [US1] 建立資料庫 session 的 pytest fixtures in backend/tests/conftest.py
   - **Fixtures**:
     - `test_db_engine`: 建立測試用 PostgreSQL engine
     - `test_db_session`: 提供測試用 async session
