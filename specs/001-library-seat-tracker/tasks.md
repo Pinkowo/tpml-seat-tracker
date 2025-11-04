@@ -25,42 +25,42 @@
 
 ### 1.1 儲存庫結構
 
-- [ ] T001 [P] 建立 backend 目錄結構 (backend/src/{api,models,services,db}/)
-- [ ] T002 [P] 建立 frontend 目錄結構 (frontend/src/{components,pages,store,services,hooks,types}/)
+- [x] T001 [P] 建立 backend 目錄結構 (backend/src/{api,models,services,db}/)
+- [x] T002 [P] 建立 frontend 目錄結構 (frontend/src/{components,pages,store,services,hooks,types}/)
 - [ ] T003 [P] 建立 docker-compose.yml，包含 PostgreSQL 15 服務定義
-- [ ] T004 [P] 建立 backend/.env.example，包含必要的環境變數
-- [ ] T005 [P] 建立 frontend/.env.example，包含 Mapbox token 佔位符
+- [x] T004 [P] 建立 backend/.env.example，包含必要的環境變數
+- [x] T005 [P] 建立 frontend/.env.example，包含 Mapbox token 佔位符
 
 ### 1.2 Backend 初始化
 
-- [ ] T006 在 backend/ 使用 uv 初始化 Python 3.12 專案，包含 pyproject.toml
-- [ ] T007 使用 uv 在 backend/pyproject.toml 安裝 FastAPI, SQLAlchemy, Alembic, APScheduler, httpx 依賴項
-- [ ] T008 在 backend/alembic.ini 初始化 Alembic 設定
-- [ ] T009 [P] 建立 backend/src/main.py，包含 FastAPI app 初始化
-- [ ] T010 [P] 在 backend/pyproject.toml 設定 Ruff linter 與 formatter
+- [x] T006 在 backend/ 使用 uv 初始化 Python 3.12 專案，包含 pyproject.toml
+- [x] T007 使用 uv 在 backend/pyproject.toml 安裝 FastAPI, SQLAlchemy, Alembic, APScheduler, httpx 依賴項
+- [x] T008 在 backend/alembic.ini 初始化 Alembic 設定
+- [x] T009 [P] 建立 backend/src/main.py，包含 FastAPI app 初始化
+- [x] T010 [P] 在 backend/pyproject.toml 設定 Ruff linter 與 formatter
 
 ### 1.3 Frontend 初始化
 
-- [ ] T011 在 frontend/ 初始化 Vite + React + TypeScript 專案
-- [ ] T012 在 frontend/package.json 安裝依賴項: Mapbox GL JS, React Query, @reduxjs/toolkit react-redux, Tailwind CSS
+- [x] T011 在 frontend/ 初始化 Vite + React + TypeScript 專案
+- [x] T012 在 frontend/package.json 安裝依賴項: Mapbox GL JS, React Query, @reduxjs/toolkit react-redux, Tailwind CSS
 - [ ] T012a [P] 在 frontend/src/index.html 引入 Town Pass 設計系統
   - **設計規範**: 引入 `specs/design/design-tokens.css` 到專案
   - **用途**: 提供完整的 Town Pass 色彩系統、字體、間距等 CSS 變數
   - **文件**: 參考 `specs/design/README.md` 了解如何使用設計變數
-- [ ] T013 [P] 在 frontend/tailwind.config.js 設定 Tailwind CSS
+- [x] T013 [P] 在 frontend/tailwind.config.js 設定 Tailwind CSS
   - **設計規範**: 擴展 Tailwind 設定以使用 Town Pass 色彩系統
   - **主色**: Primary `#5AB4C5`, Secondary `#F5BA4B`
   - **座位狀態色**: Available `#76A732`, Full `#ADB8BE`
-- [ ] T014 [P] 在 frontend/tsconfig.json 設定 TypeScript strict mode
+- [x] T014 [P] 在 frontend/tsconfig.json 設定 TypeScript strict mode
 - [ ] T015 [P] 在 frontend/ 設定 ESLint 與 Prettier
 
 ### 1.4 測試基礎設施
 
-- [ ] T015a [P] 在 backend/pyproject.toml 安裝 pytest 與 pytest-asyncio
-- [ ] T015b [P] 在 frontend/package.json 安裝 Vitest 與 @testing-library/react
-- [ ] T015c [P] 建立 backend/tests/ 目錄結構 (unit/, integration/, contract/, conftest.py)
-- [ ] T015d [P] 建立 frontend/tests/ 目錄結構 (unit/, integration/, setup.ts)
-- [ ] T015e [P] 在 backend/ 設定 pytest.ini
+- [x] T015a [P] 在 backend/pyproject.toml 安裝 pytest 與 pytest-asyncio
+- [x] T015b [P] 在 frontend/package.json 安裝 Vitest 與 @testing-library/react
+- [x] T015c [P] 建立 backend/tests/ 目錄結構 (unit/, integration/, contract/, conftest.py)
+- [x] T015d [P] 建立 frontend/tests/ 目錄結構 (unit/, integration/, setup.ts)
+- [x] T015e [P] 在 backend/ 設定 pytest.ini
 - [ ] T015f [P] 在 frontend/ 設定 vitest.config.ts
 
 ---
@@ -73,31 +73,31 @@
 
 ### 2.1 資料庫層
 
-- [ ] T016 在 backend/alembic/versions/001_create_library_info.py 建立 library_info 資料表的 migration script
-- [ ] T017 在 backend/alembic/versions/002_create_seat_realtime.py 建立 seat_realtime 資料表的 migration script
-- [ ] T018 在 backend/alembic/versions/003_create_seat_history.py 建立 seat_history 資料表的 migration script
-- [ ] T019 在 backend/alembic/versions/004_create_prediction_results.py 建立 prediction_results 資料表的 migration script
-- [ ] T020 在 backend/alembic/versions/005_create_model_registry.py 建立 model_registry 資料表的 migration script
-- [ ] T021 在 backend/src/db/connection.py 建立資料庫連線池設定
-- [ ] T022 在 backend/src/db/session.py 建立 async session factory，包含 context manager
+- [x] T016 在 backend/alembic/versions/001_create_library_info.py 建立 library_info 資料表的 migration script
+- [x] T017 在 backend/alembic/versions/002_create_seat_realtime.py 建立 seat_realtime 資料表的 migration script
+- [x] T018 在 backend/alembic/versions/003_create_seat_history.py 建立 seat_history 資料表的 migration script
+- [x] T019 在 backend/alembic/versions/004_create_prediction_results.py 建立 prediction_results 資料表的 migration script
+- [x] T020 在 backend/alembic/versions/005_create_model_registry.py 建立 model_registry 資料表的 migration script
+- [x] T021 在 backend/src/db/connection.py 建立資料庫連線池設定
+- [x] T022 在 backend/src/db/session.py 建立 async session factory，包含 context manager
 
 ### 2.2 Backend 核心架構
 
-- [ ] T023 [P] 在 backend/src/main.py 建立 FastAPI middleware，處理 CORS 與 request logging
-- [ ] T024 [P] 在 backend/src/api/exceptions.py 建立 HTTP 錯誤的 exception handlers
-- [ ] T025 [P] 在 backend/src/api/dependencies.py 建立資料庫 session 的 dependency injection
-- [ ] T026 [P] 在 backend/src/api/schemas.py 建立常用回應模式的 base Pydantic schemas
-- [ ] T027 [P] 在 backend/src/services/logger.py 使用 loguru 設定結構化日誌
-- [ ] T028 [P] 在 backend/src/config.py 使用 pydantic-settings 建立環境設定
+- [x] T023 [P] 在 backend/src/main.py 建立 FastAPI middleware，處理 CORS 與 request logging
+- [x] T024 [P] 在 backend/src/api/exceptions.py 建立 HTTP 錯誤的 exception handlers
+- [x] T025 [P] 在 backend/src/api/dependencies.py 建立資料庫 session 的 dependency injection
+- [x] T026 [P] 在 backend/src/api/schemas.py 建立常用回應模式的 base Pydantic schemas
+- [x] T027 [P] 在 backend/src/services/logger.py 使用 loguru 設定結構化日誌
+- [x] T028 [P] 在 backend/src/config.py 使用 pydantic-settings 建立環境設定
 
 ### 2.3 Frontend 核心架構
 
-- [ ] T029 [P] 在 frontend/src/App.tsx 建立 App.tsx，包含 React Router 設定
+- [x] T029 [P] 在 frontend/src/App.tsx 建立 App.tsx，包含 React Router 設定
 - [ ] T030 [P] 在 frontend/src/store/index.ts 使用 Redux Toolkit 建立 Redux store 設定
-- [ ] T031 [P] 在 frontend/src/main.tsx 建立 React Query provider 設定
-- [ ] T032 [P] 在 frontend/src/services/api.ts 建立 axios instance，包含 base URL 設定
-- [ ] T033 [P] 在 frontend/src/types/api.ts 建立 API 回應的 TypeScript types
-- [ ] T034 [P] 在 frontend/src/components/ErrorBoundary.tsx 建立 error boundary component
+- [x] T031 [P] 在 frontend/src/main.tsx 建立 React Query provider 設定
+- [x] T032 [P] 在 frontend/src/services/api.ts 建立 axios instance，包含 base URL 設定
+- [x] T033 [P] 在 frontend/src/types/api.ts 建立 API 回應的 TypeScript types
+- [x] T034 [P] 在 frontend/src/components/ErrorBoundary.tsx 建立 error boundary component
 
 **檢查點**: 基礎建設完成 - 現在可以開始平行實作 User Story
 
@@ -111,34 +111,34 @@
 
 ### 3.1 Backend - Library 與 Realtime 資料
 
-- [ ] T035 [P] [US1] 在 backend/src/models/library.py 建立 Library SQLAlchemy model
-- [ ] T036 [P] [US1] 在 backend/src/models/seat.py 建立 SeatRealtime SQLAlchemy model
-- [ ] T037 [P] [US1] 在 backend/src/services/distance.py 建立距離計算服務，使用 Haversine formula
-- [ ] T038 [US1] 在 backend/src/api/routes/libraries.py 建立 GET /api/v1/libraries endpoint，包含距離排序
-- [ ] T039 [US1] 在 backend/src/api/routes/realtime.py 建立 GET /api/v1/realtime endpoint，回傳所有圖書館與座位資料
-- [ ] T040 [US1] 在 backend/src/api/schemas.py 建立 Library 與 RealtimeSeat 回應的 Pydantic schemas
+- [x] T035 [P] [US1] 在 backend/src/models/library.py 建立 Library SQLAlchemy model
+- [x] T036 [P] [US1] 在 backend/src/models/seat.py 建立 SeatRealtime SQLAlchemy model
+- [x] T037 [P] [US1] 在 backend/src/services/distance.py 建立距離計算服務，使用 Haversine formula
+- [x] T038 [US1] 在 backend/src/api/routes/libraries.py 建立 GET /api/v1/libraries endpoint，包含距離排序
+- [x] T039 [US1] 在 backend/src/api/routes/realtime.py 建立 GET /api/v1/realtime endpoint，回傳所有圖書館與座位資料
+- [x] T040 [US1] 在 backend/src/api/schemas.py 建立 Library 與 RealtimeSeat 回應的 Pydantic schemas
 
 ### 3.2 Frontend - 地圖元件
 
-- [ ] T041 [P] [US1] 在 frontend/src/hooks/useGeolocation.ts 建立 useGeolocation hook，取得使用者位置
-- [ ] T042 [P] [US1] 在 frontend/src/types/library.ts 建立 Library 與 SeatStatus 的 TypeScript types
-- [ ] T043 [US1] 在 frontend/src/components/map/MapView.tsx 建立 Mapbox 地圖初始化元件
+- [x] T041 [P] [US1] 在 frontend/src/hooks/useGeolocation.ts 建立 useGeolocation hook，取得使用者位置
+- [x] T042 [P] [US1] 在 frontend/src/types/library.ts 建立 Library 與 SeatStatus 的 TypeScript types
+- [x] T043 [US1] 在 frontend/src/components/map/MapView.tsx 建立 Mapbox 地圖初始化元件
   - **設計規範**: 參考 `specs/design/components.md` - 地圖區域規格
-- [ ] T044 [US1] 在 frontend/src/components/map/MarkerLayer.tsx 建立標記渲染，包含顏色邏輯（綠/灰/白）
+- [x] T044 [US1] 在 frontend/src/components/map/MarkerLayer.tsx 建立標記渲染，包含顏色邏輯（綠/灰/白）
   - **設計規範**: 參考 `specs/design/components.md` - 地圖標記 (Map Marker)
   - **顏色**: 有空位 `#76A732` (Green/500) / 座位已滿 `#ADB8BE` (Grey/300) / 無資料 `#FFFFFF` + 邊框 `#91A0A8` (Grey/400)
   - **尺寸**: 40x40px，Active 狀態 48x48px，完全圓形
   - **陰影**: `0 4px 12px rgba(0, 0, 0, 0.15)`
   - **互動**: 點擊時 `scale(1.2)`，觸覺回饋
-- [ ] T045 [P] [US1] 在 frontend/src/components/info-footer/InfoFooter.tsx 建立資訊頁尾元件，包含圖例
+- [x] T045 [P] [US1] 在 frontend/src/components/info-footer/InfoFooter.tsx 建立資訊頁尾元件，包含圖例
   - **設計規範**: 參考 `specs/design/README.md` - 底部滑動面板規格
-- [ ] T046 [US1] 在 frontend/src/components/library-detail/LibraryDetail.tsx 建立圖書館詳細資訊 modal，包含座位資訊與導航
+- [x] T046 [US1] 在 frontend/src/components/library-detail/LibraryDetail.tsx 建立圖書館詳細資訊 modal，包含座位資訊與導航
   - **設計規範**: 參考 `specs/design/components.md` - 詳細資訊頁面 (Detail Page)
   - **頂部**: 彩色頂部區塊使用主色 `#5AB4C5` (Primary/500)
   - **座位卡片**: 浮起效果，超大字體 48px/Bold 顯示座位數
   - **按鈕**: 導航按鈕使用 `specs/design/components.md` - 導航按鈕規格
-- [ ] T047 [P] [US1] 在 frontend/src/hooks/useLibraryData.ts 使用 React Query 建立 useLibraryData hook
-- [ ] T048 [US1] 在 frontend/src/pages/HomePage.tsx 整合地圖與資訊頁尾
+- [x] T047 [P] [US1] 在 frontend/src/hooks/useLibraryData.ts 使用 React Query 建立 useLibraryData hook
+- [x] T048 [US1] 在 frontend/src/pages/HomePage.tsx 整合地圖與資訊頁尾
 
 ### 3.3 測試 (US1)
 
@@ -162,7 +162,69 @@
 - [x] T105i [US1] 點擊地圖空白處時需自動關閉圖書館簡介框（標記點擊不關閉） in frontend/src/pages/HomePage.tsx, frontend/src/components/library-summary/LibrarySummaryCard.tsx, frontend/src/components/map/MapView.tsx
 - [x] T105j [US1] 圖書館列表內座位 < 5 的數字與標籤改用 Secondary/500 色系，卡片外觀維持原樣 in frontend/src/components/library-list/LibraryCard.tsx
 
-**檢查點**: 此時 User Story 1 應該完全可以獨立運作與測試
+### 3.5 前後端 API 整合 ⚠️ CRITICAL
+
+**背景**: 目前 frontend hooks 使用 mock 資料 (`mockLibraries`, `mockSeatStatuses`)，需要改為呼叫真實的 backend API。
+
+**Backend API 端點已完成**:
+- ✅ `GET /api/v1/libraries?user_lat={lat}&user_lng={lng}&sort_by={distance|seats}`
+- ✅ `GET /api/v1/realtime?branch_name={name}`
+- ✅ `GET /api/v1/predict?branch_name={name}`
+
+**Frontend 整合任務**:
+
+- [ ] T106 [P] [US1] 在 frontend/src/types/api.ts 定義 Backend API 回應型別
+  - **目標**: 根據 backend schemas 定義 `LibrariesResponse`, `RealtimeResponse`, `PredictionResponse`
+  - **參考**: backend/src/api/schemas.py 的 Pydantic models
+  - **包含欄位**:
+    - LibrariesResponse: `data[]` (branch_name, address, phone, latitude, longitude, open_hours, is_open, closing_in_minutes, distance_km, current_seats)
+    - RealtimeResponse: `data[]` (branch_name, total_free_count, total_seat_count, usage_rate, last_updated, batch_id)
+    - PredictionResponse: library_id, predictions[] (horizon_minutes, predicted_seats, is_fallback)
+
+- [ ] T107 [US1] 在 frontend/src/services/libraryApi.ts 建立 API 呼叫函式
+  - **目標**: 建立 `fetchLibraries()`, `fetchRealtimeSeats()`, `fetchPredictions()` 函式
+  - **使用**: `getApiClient()` from `@/services/api.ts`
+  - **錯誤處理**: 包含 try-catch 與錯誤日誌記錄
+  - **回傳型別**: 使用 T106 定義的型別
+
+- [ ] T108 [US1] 修改 frontend/src/hooks/useLibraryData.ts 連接真實 API
+  - **移除**: `import { mockLibraries, mockSeatStatuses, simulatedDelay }` 相關程式碼
+  - **新增**: 使用 `libraryApi.fetchLibraries()` 和 `libraryApi.fetchRealtimeSeats()`
+  - **queryFn**: 改為呼叫真實 API 而非回傳 mock 資料
+  - **資料合併**: 將 libraries API 與 realtime API 的回應合併為 `LibraryWithSeat[]`
+  - **欄位對應**:
+    - Backend `branch_name` → Frontend `name`
+    - Backend `current_seats.free` → Frontend `seatStatus.available_seats`
+    - Backend `current_seats.total` → Frontend `seatStatus.total_seats`
+    - Backend `distance_km` → Frontend `distance` (轉換為公尺: km * 1000)
+
+- [ ] T109 [P] [US1] 修改 frontend/src/hooks/usePredictions.ts 連接真實 API
+  - **移除**: `import { simulatedDelay }` 相關程式碼
+  - **新增**: 使用 `libraryApi.fetchPredictions(libraryId)`
+  - **queryFn**: 改為呼叫真實 API 而非回傳 mock 資料
+  - **參數**: 根據 library ID 查找 branch_name 並傳給 backend
+  - **條件查詢**: 僅在 `libraryId !== null` 且 modal `open === true` 時執行
+
+- [ ] T110 [US1] 在 frontend/src/utils/apiAdapter.ts 建立 API 資料轉換器
+  - **目標**: 統一處理 backend 與 frontend 資料格式差異
+  - **函式**:
+    - `adaptLibraryResponse()`: 轉換 backend library 格式為 frontend Library 型別
+    - `adaptSeatResponse()`: 轉換 backend realtime 格式為 frontend SeatStatus 型別
+    - `calculateOperatingHours()`: 根據 open_hours 與 closing_in_minutes 計算前端所需的 operatingHours 物件
+  - **處理**: 欄位名稱對應、單位轉換（km→m）、null 值處理
+
+- [ ] T111 [US1] 驗證前後端整合並移除 mock 資料檔案
+  - **測試**: 啟動 backend (`uv run uvicorn src.main:app`)，確認 frontend 能正確拉取資料
+  - **驗證項目**:
+    - ✓ 地圖標記正確顯示所有圖書館
+    - ✓ 座位狀態顏色依真實資料變化（綠/黃/灰）
+    - ✓ 列表排序功能正常（依距離/依座位）
+    - ✓ 點擊標記顯示正確的圖書館資訊
+    - ✓ 詳細視窗顯示正確的預測資料
+    - ✓ Console 無 API 錯誤或型別錯誤
+  - **清理**: 確認整合無誤後，刪除或註解 `frontend/src/mocks/libraryData.ts`
+
+**檢查點**: 此時 User Story 1 應該完全可以獨立運作與測試（使用真實 API）
 
 ---
 
@@ -174,19 +236,19 @@
 
 ### 4.1 Backend - 增強排序功能
 
-- [ ] T049 [US2] 在 backend/src/services/library_service.py 實作排序服務
-- [ ] T050 [US2] 在 backend/src/api/routes/libraries.py 增強 GET /libraries endpoint，接受 user_lat/user_lng 查詢參數
-- [ ] T051 [US2] 在 backend/src/api/routes/libraries.py 新增 sort_by 查詢參數（distance/seats），包含雙重排序邏輯
+- [x] T049 [US2] 在 backend/src/services/library_service.py 實作排序服務
+- [x] T050 [US2] 在 backend/src/api/routes/libraries.py 增強 GET /libraries endpoint，接受 user_lat/user_lng 查詢參數
+- [x] T051 [US2] 在 backend/src/api/routes/libraries.py 新增 sort_by 查詢參數（distance/seats），包含雙重排序邏輯
 
 ### 4.2 Frontend - 圖書館列表元件
 
-- [ ] T052 [P] [US2] 在 frontend/src/components/library-list/LibraryList.tsx 建立可收合的圖書館列表容器
+- [x] T052 [P] [US2] 在 frontend/src/components/library-list/LibraryList.tsx 建立可收合的圖書館列表容器
   - **設計規範**: 參考 `specs/design/components.md` - 底部滑動面板 (Bottom Sheet)
   - **狀態**: 收合 (120px) / 展開 (80vh) / 隱藏
   - **圓角**: 頂部圓角 24px (`border-radius: 24px 24px 0 0`)
   - **陰影**: `0 -4px 24px rgba(11, 13, 14, 0.12)`
   - **手勢**: 點擊手柄切換、上滑/下滑展開/收合、拖曳跟隨
-- [ ] T052a [P] [US2] 在 frontend/src/components/library-list/LibraryCard.tsx 建立圖書館卡片元件
+- [x] T052a [P] [US2] 在 frontend/src/components/library-list/LibraryCard.tsx 建立圖書館卡片元件
   - **設計規範**: 參考 `specs/design/components.md` - 圖書館卡片 (Library Card)
   - **圓角**: 16px
   - **內距**: 20px
@@ -194,14 +256,14 @@
   - **座位數字**: 可用座位 28px/Semibold，顏色 `#76A732` (有空位) 或 `#ADB8BE` (已滿)
   - **狀態標籤**: 圓角 12px，有空位用 `rgba(118, 167, 50, 0.1)` 背景
   - **Active 狀態**: `scale(0.98)`，背景 `#F1F3F4`
-- [ ] T053 [P] [US2] 在 frontend/src/components/library-list/SortToggle.tsx 建立排序切換按鈕元件
+- [x] T053 [P] [US2] 在 frontend/src/components/library-list/SortToggle.tsx 建立排序切換按鈕元件
   - **設計規範**: 參考 `specs/design/components.md` - 按鈕元件規格
   - **尺寸**: 最小觸控 48x48px
   - **顏色**: 使用主色 `#5AB4C5` (Primary/500)
-- [ ] T054 [P] [US2] 在 frontend/src/components/library-list/LocationPrompt.tsx 建立位置權限提示 UI
+- [x] T054 [P] [US2] 在 frontend/src/components/library-list/LocationPrompt.tsx 建立位置權限提示 UI
   - **設計規範**: 參考 `specs/design/design-tokens.css` - 提醒色 `#FD853A` (Orange/500)
-- [ ] T055 [P] [US2] 在 frontend/src/utils/format.ts 建立距離格式化工具（m vs km，1000m 臨界值）
-- [ ] T056 [US2] 在 frontend/src/pages/HomePage.tsx 整合圖書館列表與地圖狀態同步
+- [x] T055 [P] [US2] 在 frontend/src/utils/format.ts 建立距離格式化工具（m vs km，1000m 臨界值）
+- [x] T056 [US2] 在 frontend/src/pages/HomePage.tsx 整合圖書館列表與地圖狀態同步
 
 ### 4.3 測試 (US2)
 
@@ -221,25 +283,25 @@
 
 ### 5.1 Backend - 營業時間邏輯
 
-- [ ] T057 [US3] 在 backend/src/services/opening_hours.py 建立營業時間計算服務
-- [ ] T058 [US3] 在 backend/src/api/schemas.py 新增 is_open 與 closing_in_minutes 欄位到 Library schema
-- [ ] T059 [US3] 在 backend/src/api/routes/libraries.py 增強 /libraries endpoint，包含計算後的營業狀態
+- [x] T057 [US3] 在 backend/src/services/opening_hours.py 建立營業時間計算服務
+- [x] T058 [US3] 在 backend/src/api/schemas.py 新增 is_open 與 closing_in_minutes 欄位到 Library schema
+- [x] T059 [US3] 在 backend/src/api/routes/libraries.py 增強 /libraries endpoint，包含計算後的營業狀態
 
 ### 5.2 Frontend - 營業時間顯示與倒數
 
-- [ ] T060 [P] [US3] 在 frontend/src/components/library-detail/OpeningHours.tsx 建立營業時間顯示元件
+- [x] T060 [P] [US3] 在 frontend/src/components/library-detail/OpeningHours.tsx 建立營業時間顯示元件
   - **設計規範**: 參考 `specs/design/components.md` - 詳細資訊頁面的資訊列表
   - **圖示**: 使用 clock icon (24x24px)，顏色 `#5AB4C5` (Primary/500)
   - **字體**: 標籤 12px/Regular，內容 16px/Regular
-- [ ] T061 [P] [US3] 在 frontend/src/components/library-detail/ClosingWarning.tsx 建立倒數警告元件（60min/15min 臨界值）
+- [x] T061 [P] [US3] 在 frontend/src/components/library-detail/ClosingWarning.tsx 建立倒數警告元件（60min/15min 臨界值）
   - **設計規範**: 參考 `specs/design/design-tokens.css` - 語意化顏色
   - **60min警告**: 提醒色 `#FD853A` (Orange/500 - Reminder)
   - **15min警告**: 警告色 `#D45251` (Red/500 - Alarm)
   - **圓角**: 12px
   - **內距**: 12px 16px
-- [ ] T062 [P] [US3] 在 frontend/src/components/library-detail/LibraryDetail.tsx 新增閉館狀態樣式（灰色背景）
+- [x] T062 [P] [US3] 在 frontend/src/components/library-detail/LibraryDetail.tsx 新增閉館狀態樣式（灰色背景）
   - **設計規範**: 閉館時使用禁用色 `#E3E7E9` (Grey/100 - Disable)
-- [ ] T063 [US3] 在 frontend/src/components/library-detail/LibraryDetail.tsx 整合營業時間區塊到圖書館詳細資訊 modal
+- [x] T063 [US3] 在 frontend/src/components/library-detail/LibraryDetail.tsx 整合營業時間區塊到圖書館詳細資訊 modal
 
 ### 5.3 測試 (US3)
 
@@ -258,46 +320,46 @@
 
 ### 6.1 Backend - 預測資料模型
 
-- [ ] T064 [P] [US4] 在 backend/src/models/seat.py 建立 SeatHistory SQLAlchemy model
-- [ ] T065 [P] [US4] 在 backend/src/models/prediction.py 建立 PredictionResult SQLAlchemy model
+- [x] T064 [P] [US4] 在 backend/src/models/seat.py 建立 SeatHistory SQLAlchemy model
+- [x] T065 [P] [US4] 在 backend/src/models/prediction.py 建立 PredictionResult SQLAlchemy model
 - [ ] T066 [P] [US4] 在 backend/src/models/model_registry.py 建立 ModelRegistry SQLAlchemy model
 
 ### 6.2 Backend - 資料收集 (Task A)
 
-- [ ] T067 [US4] 在 backend/src/services/seat_collector.py 建立座位資料收集服務，包含外部 API client
-- [ ] T068 [US4] 在 backend/src/services/seat_collector.py 新增 batch_id 生成與雙資料表同步（realtime + history）
-- [ ] T069 [US4] 在 backend/src/services/seat_collector.py 新增錯誤處理與重試邏輯（3 次重試，1 分鐘間隔）給外部 API（實作 FR-026：失敗時 1 分鐘間隔重試最多 3 次）
-- [ ] T070 [US4] 在 backend/src/services/scheduler.py 建立 APScheduler job，每 10 分鐘收集座位資料
+- [x] T067 [US4] 在 backend/src/services/seat_collector.py 建立座位資料收集服務，包含外部 API client
+- [x] T068 [US4] 在 backend/src/services/seat_collector.py 新增 batch_id 生成與雙資料表同步（realtime + history）
+- [x] T069 [US4] 在 backend/src/services/seat_collector.py 新增錯誤處理與重試邏輯（3 次重試，1 分鐘間隔）給外部 API（實作 FR-026：失敗時 1 分鐘間隔重試最多 3 次）
+- [x] T070 [US4] 在 backend/src/services/scheduler.py 建立 APScheduler job，每 10 分鐘收集座位資料
 
 ### 6.3 Backend - 預測訓練 (Task B)
 
-- [ ] T071 [US4] 在 backend/src/services/prediction_trainer.py 建立預測訓練服務，使用 Prophet/RandomForest/LSTM
-- [ ] T072 [US4] 在 backend/src/services/prediction_trainer.py 實作 Champion/Challenger 比較邏輯（MAPE ≥5% 改善）
-- [ ] T073 [US4] 在 backend/src/services/scheduler.py 建立 APScheduler job，每日 03:00 訓練
-- [ ] T074 [P] [US4] 在 backend/src/services/model_storage.py 建立模型持久化工具
+- [x] T071 [US4] 在 backend/src/services/prediction_trainer.py 建立預測訓練服務，使用 Prophet/RandomForest/LSTM
+- [x] T072 [US4] 在 backend/src/services/prediction_trainer.py 實作 Champion/Challenger 比較邏輯（MAPE ≥5% 改善）
+- [x] T073 [US4] 在 backend/src/services/scheduler.py 建立 APScheduler job，每日 03:00 訓練
+- [x] T074 [P] [US4] 在 backend/src/services/model_storage.py 建立模型持久化工具
 
 ### 6.4 Backend - 預測 Endpoint
 
-- [ ] T075 [US4] 在 backend/src/api/routes/predict.py 建立 GET /api/v1/predict endpoint，包含 branch_name 參數
-- [ ] T076 [US4] 在 backend/src/services/prediction_service.py 實作 fallback 邏輯（模型不可用時使用移動平均）
-- [ ] T077 [US4] 在 backend/src/api/schemas.py 建立預測回應的 Pydantic schema（30m/60m 預測時間點）
+- [x] T075 [US4] 在 backend/src/api/routes/predict.py 建立 GET /api/v1/predict endpoint，包含 branch_name 參數
+- [x] T076 [US4] 在 backend/src/services/prediction_service.py 實作 fallback 邏輯（模型不可用時使用移動平均）
+- [x] T077 [US4] 在 backend/src/api/schemas.py 建立預測回應的 Pydantic schema（30m/60m 預測時間點）
 
 ### 6.5 Frontend - 預測顯示
 
-- [ ] T078 [P] [US4] 在 frontend/src/components/library-detail/PredictionSection.tsx 建立圖書館詳細資訊 modal 的預測顯示區塊
+- [x] T078 [P] [US4] 在 frontend/src/components/library-detail/PredictionSection.tsx 建立圖書館詳細資訊 modal 的預測顯示區塊
   - **設計規範**: 參考 `specs/design/components.md` - 詳細資訊頁面的資訊卡片樣式
   - **標題**: 使用 H2 (24px/Semibold)
   - **預測數字**: 18px/Semibold，顏色依座位狀態 (`#76A732` 或 `#ADB8BE`)
   - **卡片**: 圓角 16px，內距 20px，陰影 `0 2px 8px rgba(11, 13, 14, 0.08)`
-- [ ] T079 [P] [US4] 在 frontend/src/components/library-detail/FallbackBadge.tsx 建立 fallback「估」badge 元件
+- [x] T079 [P] [US4] 在 frontend/src/components/library-detail/FallbackBadge.tsx 建立 fallback「估」badge 元件
   - **設計規範**: 參考 `specs/design/components.md` - 狀態標籤
   - **背景**: 次要色淡化 `rgba(245, 186, 75, 0.1)` (Secondary/500 alpha 0.1)
   - **文字**: 次要色 `#F5BA4B` (Secondary/500)
   - **圓角**: 12px
   - **內距**: 4px 12px
   - **字體**: 12px/Semibold
-- [ ] T080 [P] [US4] 在 frontend/src/hooks/usePredictions.ts 使用 React Query 建立 usePredictions hook
-- [ ] T081 [P] [US4] 在 frontend/src/types/prediction.ts 新增預測的 TypeScript types
+- [x] T080 [P] [US4] 在 frontend/src/hooks/usePredictions.ts 使用 React Query 建立 usePredictions hook
+- [x] T081 [P] [US4] 在 frontend/src/types/prediction.ts 新增預測的 TypeScript types
 
 ### 6.6 測試 (US4)
 
@@ -320,27 +382,27 @@
 ### 7.1 Backend - 排程任務
 
 - [ ] T082 [US5] 在 backend/src/main.py 的 FastAPI startup event 初始化 APScheduler
-- [ ] T083 [US5] 在 backend/src/services/library_sync.py 建立圖書館 metadata 同步服務（Task C）
-- [ ] T084 [US5] 在 backend/src/services/scheduler.py 建立 APScheduler job，每日 02:00 同步圖書館資料
-- [ ] T085 [P] [US5] 在 backend/src/services/retry.py 新增完整的重試邏輯，1 分鐘間隔（最多 3 次嘗試）
+- [x] T083 [US5] 在 backend/src/services/library_sync.py 建立圖書館 metadata 同步服務（Task C）
+- [x] T084 [US5] 在 backend/src/services/scheduler.py 建立 APScheduler job，每日 02:00 同步圖書館資料
+- [x] T085 [P] [US5] 在 backend/src/services/retry.py 新增完整的重試邏輯，1 分鐘間隔（最多 3 次嘗試）
 
 ### 7.2 Frontend - 輪詢與刷新邏輯
 
-- [ ] T086 [P] [US5] 在 frontend/src/main.tsx 設定 React Query，10 分鐘重新拉取間隔
-- [ ] T087 [P] [US5] 在 frontend/src/hooks/useVisibilityRefresh.ts 實作 Page Visibility API 整合，當頁面隱藏時暫停輪詢
-- [ ] T088 [P] [US5] 在 frontend/src/components/RefreshButton.tsx 建立手動刷新按鈕元件
+- [x] T086 [P] [US5] 在 frontend/src/main.tsx 設定 React Query，10 分鐘重新拉取間隔
+- [x] T087 [P] [US5] 在 frontend/src/hooks/useVisibilityRefresh.ts 實作 Page Visibility API 整合，當頁面隱藏時暫停輪詢
+- [x] T088 [P] [US5] 在 frontend/src/components/RefreshButton.tsx 建立手動刷新按鈕元件
   - **設計規範**: 參考 `specs/design/components.md` - 按鈕元件
   - **尺寸**: 48x48px 圓形按鈕
   - **背景**: 主色 `#5AB4C5` (Primary/500)
   - **圖示**: 刷新 icon，白色
   - **Active 狀態**: `scale(0.92)`，背景變深 `#468D9B` (Primary/600)
-- [ ] T089 [P] [US5] 在 frontend/src/components/StaleDataWarning.tsx 建立過期資料警告（15min 臨界值）（實作 FR-032：資料過期提示）
+- [x] T089 [P] [US5] 在 frontend/src/components/StaleDataWarning.tsx 建立過期資料警告（15min 臨界值）（實作 FR-032：資料過期提示）
   - **設計規範**: 參考 `specs/design/design-tokens.css` - 提醒色
   - **背景**: 提醒色淡化 `rgba(253, 133, 58, 0.1)` (Orange/500 alpha 0.1)
   - **文字**: 提醒色 `#FD853A` (Orange/500)
   - **圓角**: 12px
   - **內距**: 12px 16px
-- [ ] T090 [US5] 在 frontend/src/components/library-list/LibraryList.tsx 新增載入狀態與樂觀更新到圖書館列表
+- [x] T090 [US5] 在 frontend/src/components/library-list/LibraryList.tsx 新增載入狀態與樂觀更新到圖書館列表
 
 ### 7.3 測試 (US5)
 
