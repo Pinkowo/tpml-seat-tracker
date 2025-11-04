@@ -61,3 +61,5 @@ stylelintcache
 # --- Mapbox Token / API Key ---
 # 請確保敏感資訊存放於 .env 而非程式中
 mapbox_token.txt
+*.pyc
+/backend/logs/

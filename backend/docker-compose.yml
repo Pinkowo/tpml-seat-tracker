@@ -1,0 +1,62 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: tpml-seat-tracker-db
+    environment:
+      POSTGRES_DB: tpml_seat_tracker
+      POSTGRES_USER: tpml_user
+      POSTGRES_PASSWORD: tpml_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tpml_user -d tpml_seat_tracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tpml-network
+
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: tpml-seat-tracker-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://tpml_user:tpml_password@postgres:5432/tpml_seat_tracker
+      - API_BASE_URL=http://localhost:8000
+      - LOG_LEVEL=INFO
+      - EXTERNAL_API_URL=https://example.com/api/seats
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tpml-network
+    volumes:
+      - ./src:/app/src # 開發模式：掛載程式碼以支援熱重載
+      - ./logs:/app/logs
+      - ./scripts:/app/scripts # 掛載腳本目錄
+      - model-storage:/app/models
+    command: [
+        "uvicorn",
+        "src.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+      ] # 開發模式使用 reload
+
+volumes:
+  postgres-data:
+    driver: local
+  model-storage:
+    driver: local
+
+networks:
+  tpml-network:
+    driver: bridge
