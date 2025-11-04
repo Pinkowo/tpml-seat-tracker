@@ -30,6 +30,10 @@ const getMarkerVariantClass = (library: LibraryWithSeat) => {
     return 'bg-seat-full text-white';
   }
 
+  if (availableSeats <= 5) {
+    return 'bg-secondary text-white';
+  }
+
   return 'bg-seat-available text-white';
 };
 
@@ -42,6 +46,10 @@ const getAriaLabel = (library: LibraryWithSeat) => {
 
   if (status.available_seats === 0) {
     return `${library.name}，目前沒有可用座位`;
+  }
+
+  if (status.available_seats <= 5) {
+    return `${library.name}，目前剩餘 ${status.available_seats} 個座位（座位不足）`;
   }
 
   return `${library.name}，目前有 ${status.available_seats} 個可用座位`;
@@ -88,7 +96,9 @@ export const MarkerLayer = ({
           element.dataset.status = library.seatStatus
             ? library.seatStatus.available_seats === 0
               ? 'full'
-              : 'available'
+              : library.seatStatus.available_seats <= 5
+                ? 'low'
+                : 'available'
             : 'unknown';
           element.tabIndex = 0;
 

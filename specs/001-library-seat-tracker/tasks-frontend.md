@@ -283,6 +283,19 @@
 - [x] T048f [P] [US1] 在 frontend/tests/unit/hooks/test_useGeolocation.test.ts 撰寫 useGeolocation hook 的 unit tests in frontend/tests/unit/hooks/test_useGeolocation.test.ts
   - **測試案例**: Permission granted, denied, error
 
+### 3.6 版面調整與互動（第二輪調整）
+
+- [x] T105a [US1] 移除首頁提示、手動刷新按鈕、最後更新提示與 Mapbox 控制 in frontend/src/pages/HomePage.tsx, frontend/src/components/map/MapView.tsx
+- [x] T105b [US1] 將燈號圖例移至右上角，改為直向顯示並支援收合（收合時顯示 info icon） in frontend/src/components/info-footer/InfoFooter.tsx
+- [x] T105c [US1] 座位 < 5 使用 Secondary/500，並於圖例新增「座位不足」說明 in frontend/src/components/map/MarkerLayer.tsx, frontend/src/components/info-footer/InfoFooter.tsx
+- [x] T105d [US1] 點擊地圖標記顯示不遮擋列表的簡介框（名稱、營業時間、剩餘座位、距離、查看詳情） in frontend/src/components/map/MapView.tsx, frontend/src/components/library-summary/LibrarySummaryCard.tsx
+- [x] T105e [US1] 將 LibraryDetail 調整為 100% 覆蓋並支援滾動，避免爆版 in frontend/src/components/library-detail/LibraryDetail.tsx
+- [x] T105f [US1] 圖書館列表收合時僅顯示標題列與收合提示圖示 in frontend/src/components/library-list/LibraryList.tsx
+- [x] T105g [US1] 圖書館列表調整為底部抽屜，拖曳或點擊可展開至 90% 螢幕高度，排序 Tabs 固定於抽屜頂部 in frontend/src/components/library-list/LibraryList.tsx, frontend/src/pages/HomePage.tsx
+- [x] T105h [US1] 座位狀態說明收合按鈕以「-」符號呈現，避免使用者誤解為永久關閉 in frontend/src/components/info-footer/InfoFooter.tsx
+- [x] T105i [US1] 點擊地圖空白區域時關閉圖書館簡介框（點擊標記不受影響） in frontend/src/pages/HomePage.tsx, frontend/src/components/library-summary/LibrarySummaryCard.tsx, frontend/src/components/map/MapView.tsx
+- [x] T105j [US1] 圖書館列表中座位 < 5 的數字與標籤改用 Secondary/500 色系，維持卡片背景不變 in frontend/src/components/library-list/LibraryCard.tsx
+
 **檢查點**: US1 前端完成 - 地圖可顯示圖書館標記
 
 ---

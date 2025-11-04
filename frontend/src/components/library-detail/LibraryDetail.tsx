@@ -24,7 +24,7 @@ const getSeatText = (available?: number, total?: number) => {
 
   return {
     label: `${available} / ${total}`,
-    description: '目前可用座位數 / 全部座位數'
+    description: '目前可用座位數 / 全部座位數',
   };
 };
 
@@ -100,7 +100,7 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
   const lastUpdated = seatStatus?.updated_at
     ? new Date(seatStatus.updated_at).toLocaleTimeString('zh-TW', {
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       })
     : undefined;
 
@@ -121,88 +121,93 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
       role="dialog"
       aria-modal="true"
       aria-labelledby="library-detail-title"
-      className="fixed inset-0 z-30 flex items-end justify-center bg-black/50 sm:items-center"
+      className="fixed inset-0 z-30 bg-black/60"
       onClick={onClose}
     >
       <div
         ref={modalContainerRef}
-        className="relative h-[85vh] w-full max-w-lg overflow-hidden rounded-t-3xl bg-white sm:h-auto sm:rounded-3xl"
+        className="relative flex h-full w-full flex-col bg-white focus:outline-none"
         onClick={(event) => event.stopPropagation()}
       >
-        <div
-          className={clsx('relative px-6 pb-12 pt-10', {
-            'bg-primary text-white': isOpen,
-            'bg-[#E3E7E9] text-gray-600': !isOpen
-          })}
-        >
-          <button
-            type="button"
-            onClick={onClose}
-            ref={closeButtonRef}
-            className={clsx(
-              'absolute left-6 top-6 flex h-11 w-11 items-center justify-center rounded-full backdrop-blur transition focus:outline-none focus-visible:ring-2',
-              {
-                'bg-white/20 hover:bg-white/30 focus-visible:ring-white': isOpen,
-                'bg-white/50 text-gray-700 hover:bg-white/70 focus-visible:ring-gray-400': !isOpen
-              }
-            )}
-            aria-label="關閉詳細資訊"
-          >
-            ×
-          </button>
-          <p
-            className={clsx('text-sm uppercase tracking-[0.2em]', {
-              'text-white/80': isOpen,
-              'text-gray-500': !isOpen
-            })}
-          >
-            Library
-          </p>
-          <h2 id="library-detail-title" className="mt-2 text-3xl font-semibold">
-            {library.name}
-          </h2>
-          <p
-            className={clsx('mt-2 text-sm', {
-              'text-white/80': isOpen,
-              'text-gray-500': !isOpen
-            })}
-          >
-            {library.address}
-          </p>
-        </div>
-
-        <div className="-mt-12 space-y-6 rounded-t-3xl bg-white px-6 pb-8 pt-6">
+        <div className="flex-1 overflow-y-auto">
           <div
-            className={clsx('rounded-2xl p-6 shadow-card', {
-              'bg-white text-gray-700': isOpen,
-              'bg-[#E3E7E9] text-gray-500': !isOpen
+            className={clsx('relative px-6 pb-12 pt-10', {
+              'bg-primary text-white': isOpen,
+              'bg-[#E3E7E9] text-gray-600': !isOpen,
             })}
           >
-            <p className="text-xs uppercase tracking-[0.2em] text-gray-500">目前座位狀態</p>
-            <p className={clsx('mt-3 text-5xl font-bold', seatColor)}>{seatText.label}</p>
-            <p className="mt-2 text-sm text-gray-500">{seatText.description}</p>
-            {lastUpdated && <p className="mt-3 text-xs text-gray-400">更新時間：{lastUpdated}</p>}
+            <button
+              type="button"
+              onClick={onClose}
+              ref={closeButtonRef}
+              className={clsx(
+                'absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-full backdrop-blur transition focus:outline-none focus-visible:ring-2',
+                {
+                  'bg-white/20 hover:bg-white/30 focus-visible:ring-white': isOpen,
+                  'bg-white/50 text-gray-700 hover:bg-white/70 focus-visible:ring-gray-400':
+                    !isOpen,
+                }
+              )}
+              aria-label="關閉詳細資訊"
+            >
+              ×
+            </button>
+            <p
+              className={clsx('text-sm uppercase tracking-[0.2em]', {
+                'text-white/80': isOpen,
+                'text-gray-500': !isOpen,
+              })}
+            >
+              Library
+            </p>
+            <h2 id="library-detail-title" className="mt-2 text-3xl font-semibold">
+              {library.name}
+            </h2>
+            <p
+              className={clsx('mt-2 text-sm', {
+                'text-white/80': isOpen,
+                'text-gray-500': !isOpen,
+              })}
+            >
+              {library.address}
+            </p>
           </div>
 
-          <OpeningHours operatingHours={operatingHours} isOpen={isOpen} />
-          <ClosingWarning closingInMinutes={operatingHours?.closesInMinutes ?? null} />
-          <PredictionSection
-            data={predictionsQuery.data}
-            isLoading={predictionsQuery.isLoading}
-            isError={predictionsQuery.isError}
-            onRetry={() => predictionsQuery.refetch()}
-          />
-
-          <div className={clsx('space-y-4', isOpen ? 'text-gray-700' : 'text-gray-500')}>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-500">距離</h3>
-              <p className="mt-1 text-base">
-                {library.distance ? `${(library.distance / 1000).toFixed(1)} 公里` : '距離資訊取得中'}
-              </p>
+          <div className="-mt-12 space-y-6 rounded-t-3xl bg-white px-6 pb-8 pt-6">
+            <div
+              className={clsx('rounded-2xl p-6 shadow-card', {
+                'bg-white text-gray-700': isOpen,
+                'bg-[#E3E7E9] text-gray-500': !isOpen,
+              })}
+            >
+              <p className="text-xs uppercase tracking-[0.2em] text-gray-500">目前座位狀態</p>
+              <p className={clsx('mt-3 text-5xl font-bold', seatColor)}>{seatText.label}</p>
+              <p className="mt-2 text-sm text-gray-500">{seatText.description}</p>
+              {lastUpdated && <p className="mt-3 text-xs text-gray-400">更新時間：{lastUpdated}</p>}
             </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-500">圖書館資訊</h3>
-              <p className="mt-1 text-base leading-relaxed">{library.address}</p>
+
+            <OpeningHours operatingHours={operatingHours} isOpen={isOpen} />
+            <ClosingWarning closingInMinutes={operatingHours?.closesInMinutes ?? null} />
+            <PredictionSection
+              data={predictionsQuery.data}
+              isLoading={predictionsQuery.isLoading}
+              isError={predictionsQuery.isError}
+              onRetry={() => predictionsQuery.refetch()}
+            />
+
+            <div className={clsx('space-y-4', isOpen ? 'text-gray-700' : 'text-gray-500')}>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500">距離</h3>
+                <p className="mt-1 text-base">
+                  {library.distance
+                    ? `${(library.distance / 1000).toFixed(1)} 公里`
+                    : '距離資訊取得中'}
+                </p>
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500">圖書館資訊</h3>
+                <p className="mt-1 text-base leading-relaxed">{library.address}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -220,7 +225,7 @@ export const LibraryDetail = ({ open, library, onClose }: LibraryDetailProps) =>
                 : 'cursor-not-allowed bg-gray-200 text-gray-500'
             )}
           >
-            {isOpen ? '開啟導航' : '目前非營業時間' }
+            {isOpen ? '開啟導航' : '目前非營業時間'}
           </button>
         </div>
       </div>

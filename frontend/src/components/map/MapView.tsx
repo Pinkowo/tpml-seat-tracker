@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { Map as MapboxMap } from 'mapbox-gl';
+import type { Map as MapboxMap, MapMouseEvent } from 'mapbox-gl';
 import type { LibraryWithSeat } from '@/types/library';
 import { MarkerLayer } from './MarkerLayer';
 import { captureError } from '@/services/errorLogger';
@@ -12,6 +12,7 @@ interface MapViewProps {
   onMarkerClick: (libraryId: number) => void;
   userLocation?: { lat: number; lng: number } | null;
   focusLibrary?: LibraryWithSeat | null;
+  onMapBackgroundClick?: () => void;
 }
 
 export const MapView = ({
@@ -19,7 +20,8 @@ export const MapView = ({
   selectedLibraryId,
   onMarkerClick,
   userLocation,
-  focusLibrary
+  focusLibrary,
+  onMapBackgroundClick
 }: MapViewProps) => {
   const mapNode = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapboxMap | null>(null);
@@ -54,24 +56,22 @@ export const MapView = ({
           zoom: 12
         });
 
-      mapInstance.addControl(new mapbox.NavigationControl(), 'top-right');
+        mapInstance.on('load', () => {
+          if (!isCancelled) {
+            setIsReady(true);
+          }
+        });
 
-      mapInstance.on('load', () => {
-        if (!isCancelled) {
-          setIsReady(true);
-        }
-      });
+        mapInstance.on('error', () => {
+          if (!isCancelled) {
+            const message =
+              '地圖載入失敗，請確認 Mapbox Token 是否有效或網路連線是否正常，重新整理頁面後再試一次。';
+            setMapError(message);
+            captureError(new Error(message), { scope: 'map', accessTokenPresent: Boolean(accessToken) });
+          }
+        });
 
-      mapInstance.on('error', () => {
-        if (!isCancelled) {
-          const message =
-            '地圖載入失敗，請確認 Mapbox Token 是否有效或網路連線是否正常，重新整理頁面後再試一次。';
-          setMapError(message);
-          captureError(new Error(message), { scope: 'map', accessTokenPresent: Boolean(accessToken) });
-        }
-      });
-
-      mapRef.current = mapInstance;
+        mapRef.current = mapInstance;
       } catch (error) {
         if (!isCancelled) {
           captureError(error, { scope: 'map-init' });
@@ -122,6 +122,28 @@ export const MapView = ({
     });
     lastFocusedLibraryId.current = focusLibrary.id;
   }, [focusLibrary]);
+
+  useEffect(() => {
+    const mapInstance = mapRef.current;
+
+    if (!mapInstance || !onMapBackgroundClick) {
+      return;
+    }
+
+    const handleMapClick = (event: MapMouseEvent) => {
+      const target = event.originalEvent?.target as HTMLElement | null;
+      if (target?.closest('.map-marker')) {
+        return;
+      }
+      onMapBackgroundClick();
+    };
+
+    mapInstance.on('click', handleMapClick);
+
+    return () => {
+      mapInstance.off('click', handleMapClick);
+    };
+  }, [onMapBackgroundClick, isReady]);
 
   if (!accessToken) {
     return (

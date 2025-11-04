@@ -13,8 +13,8 @@ export const mockLibraries: Library[] = [
       closeTime: '21:00',
       isOpen: true,
       closesInMinutes: 75,
-      nextOpenTime: null
-    }
+      nextOpenTime: null,
+    },
   },
   {
     id: 2,
@@ -28,8 +28,8 @@ export const mockLibraries: Library[] = [
       closeTime: '20:00',
       isOpen: true,
       closesInMinutes: 12,
-      nextOpenTime: null
-    }
+      nextOpenTime: null,
+    },
   },
   {
     id: 3,
@@ -43,9 +43,9 @@ export const mockLibraries: Library[] = [
       closeTime: '18:00',
       isOpen: false,
       closesInMinutes: null,
-      nextOpenTime: '明日 10:00'
-    }
-  }
+      nextOpenTime: '明日 10:00',
+    },
+  },
 ];
 
 export const mockSeatStatuses: SeatStatus[] = [
@@ -53,20 +53,20 @@ export const mockSeatStatuses: SeatStatus[] = [
     library: mockLibraries[0],
     available_seats: 18,
     total_seats: 120,
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   },
   {
     library: mockLibraries[1],
     available_seats: 0,
     total_seats: 80,
-    updated_at: new Date(Date.now() - 5 * 60 * 1000).toISOString()
+    updated_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
   },
   {
     library: mockLibraries[2],
-    available_seats: 12,
+    available_seats: 2,
     total_seats: 60,
-    updated_at: new Date(Date.now() - 12 * 60 * 1000).toISOString()
-  }
+    updated_at: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
+  },
 ];
 
 export const mockUnknownSeatStatus: SeatStatus = {
@@ -81,12 +81,12 @@ export const mockUnknownSeatStatus: SeatStatus = {
       closeTime: '--:--',
       isOpen: false,
       closesInMinutes: null,
-      nextOpenTime: null
-    }
+      nextOpenTime: null,
+    },
   },
   available_seats: 0,
   total_seats: 0,
-  updated_at: new Date().toISOString()
+  updated_at: new Date().toISOString(),
 };
 
 export const simulatedDelay = (ms = 200): Promise<void> =>

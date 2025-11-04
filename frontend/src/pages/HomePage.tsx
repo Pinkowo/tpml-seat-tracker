@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react';
 import { MapView } from '@/components/map/MapView';
-import { InfoFooter } from '@/components/info-footer/InfoFooter';
+import { InfoLegend } from '@/components/info-legend/InfoLegend';
 import { LibraryDetail } from '@/components/library-detail/LibraryDetail';
 import { LibraryList, type SortOption } from '@/components/library-list/LibraryList';
-import { RefreshButton } from '@/components/RefreshButton';
-import { StaleDataWarning } from '@/components/StaleDataWarning';
+import { LibrarySummaryCard } from '@/components/library-summary/LibrarySummaryCard';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useLibraryData } from '@/hooks/useLibraryData';
 import { useVisibilityRefresh } from '@/hooks/useVisibilityRefresh';
@@ -22,80 +21,60 @@ const getLatestUpdatedAt = (libraries: LibraryWithSeat[]) => {
   return timestamps.sort().at(-1);
 };
 
-const getOldestUpdatedAt = (libraries: LibraryWithSeat[]) => {
-  const timestamps = libraries
-    .map((library) => library.seatStatus?.updated_at)
-    .filter((value): value is string => Boolean(value));
-
-  if (!timestamps.length) {
-    return undefined;
-  }
-
-  return timestamps.sort().at(0);
-};
-
 const HomePage = () => {
-  const [selectedLibraryId, setSelectedLibraryId] = useState<number | null>(null);
+  const [summaryLibraryId, setSummaryLibraryId] = useState<number | null>(null);
+  const [detailLibraryId, setDetailLibraryId] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('distance');
   const geolocation = useGeolocation();
-  const { libraries, isLoading, isFetching, isError, error, refetch } = useLibraryData(
+  const { libraries, isLoading, isFetching, isError, error } = useLibraryData(
     geolocation.location ?? undefined
   );
 
   useVisibilityRefresh();
 
   const lastUpdated = useMemo(() => getLatestUpdatedAt(libraries), [libraries]);
-  const oldestUpdated = useMemo(() => getOldestUpdatedAt(libraries), [libraries]);
-  const selectedLibrary = useMemo(
-    () => libraries.find((library) => library.id === selectedLibraryId) ?? null,
-    [libraries, selectedLibraryId]
+  const summaryLibrary = useMemo(
+    () => libraries.find((library) => library.id === summaryLibraryId) ?? null,
+    [libraries, summaryLibraryId]
   );
+  const detailLibrary = useMemo(
+    () => libraries.find((library) => library.id === detailLibraryId) ?? null,
+    [libraries, detailLibraryId]
+  );
+  const activeLibraryId = detailLibraryId ?? summaryLibraryId ?? null;
   const needsLocationPrompt = Boolean(geolocation.error);
-  const isRefreshing = !isLoading && isFetching;
+
+  const handleMarkerSelect = (libraryId: number) => {
+    setSummaryLibraryId(libraryId);
+  };
 
   const handleSelectLibrary = (libraryId: number) => {
-    setSelectedLibraryId(libraryId);
+    setSummaryLibraryId(null);
+    setDetailLibraryId(libraryId);
   };
 
   const handleSortChange = (value: SortOption) => {
     setSortBy(value);
   };
 
-  const hasGeoError = Boolean(geolocation.error);
-  const geolocationMessage = geolocation.error ?? '為你推薦附近的圖書館座位狀況';
+  const handleMapBackgroundClick = () => {
+    if (detailLibraryId) {
+      return;
+    }
+
+    setSummaryLibraryId(null);
+  };
 
   return (
     <div className="relative flex h-screen w-full flex-col bg-[#E8EFF1]">
-      <header className="pointer-events-none absolute left-0 right-0 top-0 z-20 flex justify-center p-6">
-        <div className="pointer-events-auto flex flex-col items-center gap-3">
-          <div className="flex items-center gap-3">
-            <div
-              className={`flex items-center gap-2 rounded-full border px-5 py-2 text-sm shadow ${
-                hasGeoError
-                  ? 'border-red-200 bg-red-50 text-red-600'
-                  : 'border-transparent bg-white/90 text-gray-600'
-              }`}
-              role="status"
-              aria-live="polite"
-            >
-              {hasGeoError && (
-                <span className="inline-flex h-2 w-2 rounded-full bg-red-400" aria-hidden="true" />
-              )}
-              <span>{geolocationMessage}</span>
-            </div>
-            <RefreshButton className="shadow" onAfterRefresh={refetch} />
-          </div>
-          <StaleDataWarning lastUpdated={oldestUpdated} />
-        </div>
-      </header>
-
       <main className="relative flex-1">
         <MapView
           libraries={libraries}
-          selectedLibraryId={selectedLibraryId}
-          onMarkerClick={handleSelectLibrary}
+          selectedLibraryId={activeLibraryId}
+          onMarkerClick={handleMarkerSelect}
           userLocation={geolocation.location}
-          focusLibrary={selectedLibrary}
+          focusLibrary={detailLibrary ?? summaryLibrary}
+          onMapBackgroundClick={handleMapBackgroundClick}
         />
 
         {(isLoading || geolocation.loading) && (
@@ -110,19 +89,28 @@ const HomePage = () => {
           </div>
         )}
 
-        <InfoFooter lastUpdated={lastUpdated} />
+        <div className="pointer-events-none absolute right-4 top-6 z-30 flex flex-col items-end gap-3 sm:right-6">
+          <InfoLegend lastUpdated={lastUpdated} />
+        </div>
         <LibraryDetail
-          open={Boolean(selectedLibrary)}
-          library={selectedLibrary}
-          onClose={() => setSelectedLibraryId(null)}
+          open={Boolean(detailLibrary)}
+          library={detailLibrary}
+          onClose={() => setDetailLibraryId(null)}
         />
+        {summaryLibrary && !detailLibrary && (
+          <LibrarySummaryCard
+            library={summaryLibrary}
+            onClose={() => setSummaryLibraryId(null)}
+            onViewDetail={() => setDetailLibraryId(summaryLibrary.id)}
+          />
+        )}
         <LibraryList
           libraries={libraries}
-          selectedLibraryId={selectedLibraryId}
+          selectedLibraryId={activeLibraryId}
           sortBy={sortBy}
           onSortChange={handleSortChange}
           onSelectLibrary={handleSelectLibrary}
-          isRefreshing={isRefreshing}
+          isRefreshing={!isLoading && isFetching}
           showLocationPrompt={needsLocationPrompt}
           onRequestLocation={geolocation.retry}
         />

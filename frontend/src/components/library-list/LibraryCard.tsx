@@ -25,6 +25,14 @@ const getSeatStatus = (available?: number) => {
     };
   }
 
+  if (available <= 5) {
+    return {
+      label: '座位不足',
+      badgeClass: 'bg-gray-100 text-secondary',
+      valueClass: 'text-secondary'
+    };
+  }
+
   return {
     label: '有空位',
     badgeClass: 'bg-[rgba(118,167,50,0.1)] text-seat-available',

@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import type { PointerEvent as ReactPointerEvent } from 'react';
 import clsx from 'clsx';
 import type { LibraryWithSeat } from '@/types/library';
 import { LibraryCard } from './LibraryCard';
@@ -18,8 +19,6 @@ interface LibraryListProps {
   onRequestLocation: () => void;
 }
 
-type SheetState = 'collapsed' | 'expanded';
-
 export const LibraryList = ({
   libraries,
   selectedLibraryId,
@@ -28,9 +27,12 @@ export const LibraryList = ({
   onSelectLibrary,
   isRefreshing,
   showLocationPrompt,
-  onRequestLocation
+  onRequestLocation,
 }: LibraryListProps) => {
-  const [sheetState, setSheetState] = useState<SheetState>('collapsed');
+  type DrawerState = 'collapsed' | 'expanded';
+  const [drawerState, setDrawerState] = useState<DrawerState>('collapsed');
+  const pointerStartYRef = useRef<number | null>(null);
+  const isExpanded = drawerState === 'expanded';
 
   const sortedLibraries = useMemo(() => {
     if (sortBy === 'distance') {
@@ -44,64 +46,102 @@ export const LibraryList = ({
     });
   }, [libraries, sortBy]);
 
-  const toggleSheet = () => {
-    setSheetState((prev) => (prev === 'collapsed' ? 'expanded' : 'collapsed'));
+  const setDrawer = (state: DrawerState) => {
+    setDrawerState(state);
+  };
+
+  const handleToggle = () => {
+    setDrawer(isExpanded ? 'collapsed' : 'expanded');
   };
 
   const handleSelect = (libraryId: number) => {
-    setSheetState('expanded');
+    setDrawer('expanded');
     onSelectLibrary(libraryId);
   };
 
+  const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    pointerStartYRef.current = event.clientY;
+  };
+
+  const handlePointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (pointerStartYRef.current === null) {
+      return;
+    }
+
+    const deltaY = event.clientY - pointerStartYRef.current;
+
+    if (deltaY <= -40) {
+      setDrawer('expanded');
+    } else if (deltaY >= 40) {
+      setDrawer('collapsed');
+    }
+
+    pointerStartYRef.current = null;
+  };
+
+  const handlePointerCancel = () => {
+    pointerStartYRef.current = null;
+  };
+
   return (
-    <section
-      className={clsx(
-        'fixed bottom-0 left-0 right-0 z-30 mx-auto w-full max-w-3xl px-4 transition-transform duration-300 sm:right-6 sm:left-auto sm:max-w-sm',
-        {
-          'translate-y-0': sheetState !== 'collapsed',
-          'translate-y-[60%] sm:translate-y-0 sm:bottom-6': sheetState === 'collapsed'
-        }
-      )}
-      aria-expanded={sheetState === 'expanded'}
-      aria-busy={isRefreshing}
-    >
-      <div className="relative rounded-t-3xl bg-white pb-6 shadow-sheet sm:rounded-3xl">
-        {isRefreshing && (
-          <div className="absolute left-0 right-0 top-0 h-1 overflow-hidden rounded-t-3xl bg-primary/20">
-            <div className="h-full w-full animate-pulse bg-primary" />
+    <section className="pointer-events-none fixed inset-x-0 bottom-0 z-30">
+      <div
+        className={clsx(
+          'pointer-events-auto mx-auto flex w-full max-w-2xl flex-col overflow-hidden rounded-t-3xl bg-white shadow-sheet transition-all duration-300 ease-in-out pb-8',
+          isExpanded ? 'h-[90vh]' : 'h-[88px]'
+        )}
+      >
+        <button
+          type="button"
+          onClick={handleToggle}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
+          aria-expanded={isExpanded}
+          aria-label={isExpanded ? '收合列表' : '展開列表'}
+          className="flex w-full items-center justify-between border-b border-gray-100 px-4 py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-inset"
+        >
+          <span className="text-sm font-semibold text-gray-800 w-20">附近圖書館</span>
+          <span className="h-1.5 w-16 rounded-full bg-gray-300" aria-hidden="true" />
+          <span aria-hidden="true" className="text-sm font-semibold text-gray-500 w-20">
+            {isExpanded ? '收合' : '展開'}
+          </span>
+        </button>
+        {isExpanded && (
+          <div className="flex h-full flex-col">
+            <div className="border-b border-gray-100 px-4 py-3">
+              <SortToggle value={sortBy} onChange={onSortChange} />
+            </div>
+            {showLocationPrompt && sortBy === 'distance' && (
+              <div className="px-4 pt-3">
+                <LocationPrompt onRequestPermission={onRequestLocation} />
+              </div>
+            )}
+            <div className="flex-1 overflow-y-auto px-4 pb-5 pt-3">
+              {isRefreshing && (
+                <div className="mb-3 h-1 rounded-full bg-primary/20">
+                  <div className="h-full w-full animate-pulse rounded-full bg-primary" />
+                </div>
+              )}
+              {sortedLibraries.length === 0 ? (
+                <p className="py-6 text-center text-sm text-gray-500">
+                  目前沒有圖書館資料，請稍後再試。
+                </p>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {sortedLibraries.map((library) => (
+                    <LibraryCard
+                      key={library.id}
+                      library={library}
+                      isActive={library.id === selectedLibraryId}
+                      onSelect={handleSelect}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
-        <div className="flex flex-col gap-4 border-b border-gray-100 px-5 pb-4 pt-3">
-          <button
-            type="button"
-            onClick={toggleSheet}
-            className="mx-auto h-1.5 w-12 rounded-full bg-gray-300"
-            aria-label={sheetState === 'collapsed' ? '展開列表' : '收合列表'}
-          />
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-gray-800">附近圖書館</h2>
-            <SortToggle value={sortBy} onChange={onSortChange} />
-          </div>
-          {showLocationPrompt && sortBy === 'distance' && (
-            <LocationPrompt onRequestPermission={onRequestLocation} />
-          )}
-        </div>
-        <div className="max-h-[60vh] overflow-y-auto px-5 pt-4">
-          {sortedLibraries.length === 0 ? (
-            <p className="py-6 text-center text-sm text-gray-500">目前沒有圖書館資料，請稍後再試。</p>
-          ) : (
-            <div className="flex flex-col gap-4 pb-6">
-              {sortedLibraries.map((library) => (
-                <LibraryCard
-                  key={library.id}
-                  library={library}
-                  isActive={library.id === selectedLibraryId}
-                  onSelect={handleSelect}
-                />
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </section>
   );
