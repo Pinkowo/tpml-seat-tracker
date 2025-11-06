@@ -121,6 +121,7 @@
 ### 3.2 Frontend - 地圖元件
 
 - [x] T041 [P] [US1] 在 frontend/src/hooks/useGeolocation.ts 建立 useGeolocation hook，取得使用者位置
+  - **注意**: 目前使用 `navigator.geolocation`，需更新為 Flutter JS Bridge 整合（見 T112-T115）
 - [x] T042 [P] [US1] 在 frontend/src/types/library.ts 建立 Library 與 SeatStatus 的 TypeScript types
 - [x] T043 [US1] 在 frontend/src/components/map/MapView.tsx 建立 Mapbox 地圖初始化元件
   - **設計規範**: 參考 `specs/design/components.md` - 地圖區域規格
@@ -224,7 +225,99 @@
     - ✓ Console 無 API 錯誤或型別錯誤
   - **清理**: 確認整合無誤後，刪除或註解 `frontend/src/mocks/libraryData.ts`
 
-**檢查點**: 此時 User Story 1 應該完全可以獨立運作與測試（使用真實 API）
+### 3.6 使用者位置標記與 Flutter JS Bridge 整合 🆕 CRITICAL
+
+**背景**: 根據更新的 spec.md (FR-004-1, FR-004-2, FR-004-3)，需要在地圖上顯示使用者當前位置標記，並透過 Flutter JS Bridge 整合定位功能。
+
+**新增功能需求**:
+- FR-004-1: 顯示使用者當前位置標記（藍色圓點 + 半透明光圈）
+- FR-004-2: 定位成功/失敗時的標記顯示邏輯
+- FR-004-3: 定位狀態視覺回饋（成功指示器、錯誤提示）
+
+**Flutter JS Bridge 整合** (參考 `docs/microservice_requirements.md`):
+
+- [ ] T112 [P] [US1] 在 frontend/src/services/flutterBridge.ts 建立 Flutter JS Bridge 服務
+  - **目標**: 封裝 `window.flutterObject.postMessage()` 呼叫邏輯
+  - **功能**:
+    - `checkBridgeAvailable()`: 檢查 `window.flutterObject` 是否存在
+    - `requestLocation()`: 發送定位請求 `{ name: 'location', data: null }`
+    - `setupLocationListener(callback)`: 監聽定位回應
+  - **錯誤處理**: Bridge 不可用時回傳 null，不拋出錯誤
+
+- [ ] T113 [US1] 更新 frontend/src/hooks/useGeolocation.ts 以支援 Flutter JS Bridge
+  - **目標**: 優先使用 Flutter JS Bridge 取得定位，降級使用 `navigator.geolocation`
+  - **邏輯流程**:
+    1. 檢查 `window.flutterObject` 是否存在
+    2. 若存在：使用 `flutterBridge.requestLocation()`
+    3. 若不存在：降級使用現有的 `navigator.geolocation`
+  - **回應處理**:
+    - 成功: `data` 為 Position JSON → 更新 `location` state
+    - 失敗: `data` 為 `[]` → 設定 `error` state
+  - **保持現有 API**: 確保 `GeolocationState` 介面不變，維持向下相容
+
+- [ ] T114 [P] [US1] 在 frontend/src/components/map/UserLocationMarker.tsx 建立使用者位置標記元件
+  - **設計規範**:
+    - **標記樣式**: 藍色圓點 16x16px（`#5AB4C5` Primary/500）
+    - **光圈效果**: 外圍半透明光圈 radius 32px，脈衝動畫（opacity 0.2 → 0.6）
+    - **陰影**: `0 2px 8px rgba(90, 180, 197, 0.4)`
+  - **實作細節**:
+    - 使用 Mapbox GL JS `Marker` API
+    - 接收 `map` 與 `location` props
+    - 定位成功時渲染，失敗時不渲染
+
+- [ ] T115 [US1] 在 frontend/src/components/map/MapView.tsx 整合使用者位置標記
+  - **目標**: 在地圖上渲染 `UserLocationMarker` 元件
+  - **條件渲染**: 僅當 `userLocation` 不為 null 且 `geolocation.error` 為 null 時顯示
+  - **位置更新**: 當 `userLocation` 改變時，標記自動更新位置
+
+**定位狀態視覺回饋**:
+
+- [ ] T116 [P] [US1] 在 frontend/src/components/map/LocationStatusIndicator.tsx 建立定位狀態指示器元件
+  - **設計規範**:
+    - **成功狀態**: 右下角顯示「✓ 已定位」，背景 `#76A732` (Green/500)，文字白色
+    - **尺寸**: 圓角 20px，padding 8px 12px，字體 12px/Semibold
+    - **位置**: 地圖右下角，距離邊緣 16px
+  - **顯示條件**: `geolocation.location !== null && geolocation.error === null`
+
+- [ ] T117 [US1] 在 frontend/src/pages/HomePage.tsx 顯示定位錯誤提示
+  - **目標**: 當 `geolocation.error` 不為 null 時，在主畫面顯示錯誤訊息
+  - **設計規範**:
+    - **背景**: 提醒色 `rgba(253, 133, 58, 0.95)` (Orange/500)
+    - **位置**: 頂部中央，距離頂部 80px
+    - **圓角**: 16px
+    - **陰影**: `0 4px 16px rgba(0, 0, 0, 0.15)`
+  - **內容**: 顯示 `geolocation.error` 訊息 + 「重新定位」按鈕
+  - **互動**: 點擊「重新定位」按鈕呼叫 `geolocation.retry()`
+
+- [ ] T118 [US1] 整合定位狀態指示器與錯誤提示到 HomePage
+  - **目標**: 在 `frontend/src/pages/HomePage.tsx` 渲染 `LocationStatusIndicator` 與錯誤提示
+  - **測試**: 驗證定位成功/失敗情境下的 UI 顯示正確
+
+**測試任務**:
+
+- [ ] T119 [P] [US1] 在 frontend/tests/unit/services/test_flutterBridge.test.ts 撰寫 Flutter Bridge 服務的 unit tests
+  - **測試情境**:
+    - Bridge 可用時正確發送訊息
+    - Bridge 不可用時回傳 null
+    - Location listener 正確處理回應
+
+- [ ] T120 [P] [US1] 在 frontend/tests/integration/test_geolocation_bridge.test.ts 撰寫定位整合測試
+  - **測試情境**:
+    - Flutter Bridge 可用時使用 Bridge
+    - Flutter Bridge 不可用時降級使用 navigator.geolocation
+    - 成功/失敗回應的狀態更新
+
+- [ ] T121 [P] [US1] 在 frontend/tests/integration/test_user_location_marker.test.ts 撰寫使用者位置標記的渲染測試
+  - **測試情境**:
+    - 定位成功時標記正確渲染
+    - 定位失敗時標記不渲染
+    - 位置更新時標記位置正確更新
+
+**檢查點**: 使用者位置標記與 Flutter JS Bridge 整合完成
+
+---
+
+**檢查點**: 此時 User Story 1 應該完全可以獨立運作與測試（使用真實 API + 使用者位置標記）
 
 ---
 

@@ -1,65 +1,59 @@
-# Specification Quality Checklist: 圖書館座位地圖與預測系統
+# 規格品質檢查清單：圖書館座位地圖與預測系統
 
-**Purpose**: Validate specification completeness and quality before proceeding to planning
-**Created**: 2025-11-01
-**Feature**: [spec.md](../spec.md)
-**Validation Status**: ✅ PASSED (2025-11-01)
+**目的**: 在進入規劃階段前驗證規格的完整性與品質
+**建立日期**: 2025-11-06
+**功能**: [spec.md](../spec.md)
 
-## Content Quality
+## 內容品質
 
-- [x] No implementation details (languages, frameworks, APIs)
-  - ✅ Removed specific algorithm names (Haversine, LOCF, MAPE, Prophet/RF/LSTM)
-  - ✅ Removed technical identifiers (batch_id → "同一批次")
-  - ⚠️ API contracts (FR-040 ~ FR-043) retained as interface specifications (not internal implementation)
-- [x] Focused on user value and business needs
-- [x] Written for non-technical stakeholders
-- [x] All mandatory sections completed
-  - ✅ User Scenarios & Testing
-  - ✅ Requirements (Functional Requirements + Key Entities)
-  - ✅ Success Criteria
+- [x] 無實作細節（語言、框架、API）
+- [x] 聚焦於使用者價值與業務需求
+- [x] 為非技術相關人員撰寫
+- [x] 所有必要章節已完成
 
-## Requirement Completeness
+## 需求完整性
 
-- [x] No [NEEDS CLARIFICATION] markers remain
-- [x] Requirements are testable and unambiguous
-- [x] Success criteria are measurable
-- [x] Success criteria are technology-agnostic (no implementation details)
-- [x] All acceptance scenarios are defined
-  - ✅ 5 user stories with Given-When-Then scenarios
-  - ✅ Each story has priority (P1/P2/P3) and independent test description
-- [x] Edge cases are identified
-  - ✅ 7 edge cases documented (定位拒絕、資料缺漏、API 失敗等)
-- [x] Scope is clearly bounded
-  - ✅ Phase 2 features explicitly listed in "Out of Scope"
-- [x] Dependencies and assumptions identified
-  - ✅ Assumptions section clearly documents 7 key assumptions
+- [x] 無 [NEEDS CLARIFICATION] 標記
+- [x] 需求可測試且明確
+- [x] 成功標準可衡量
+- [x] 成功標準與技術無關（無實作細節）
+- [x] 所有驗收情境已定義
+- [x] 邊緣情況已識別
+- [x] 範疇明確界定
+- [x] 依賴項與假設已識別
 
-## Feature Readiness
+## 功能就緒度
 
-- [x] All functional requirements have clear acceptance criteria
-  - ✅ 46 functional requirements (FR-001 ~ FR-046)
-  - ✅ Organized by feature area (地圖與標記、底部資訊框、列表視窗等)
-- [x] User scenarios cover primary flows
-  - ✅ P1: 地圖查找 + 列表排序（核心 MVP）
-  - ✅ P2: 開館倒數 + 座位預測（增強功能）
-  - ✅ P3: 自動更新（技術支撐）
-- [x] Feature meets measurable outcomes defined in Success Criteria
-  - ✅ 8 success criteria with specific metrics (time, percentage, count)
-- [x] No implementation details leak into specification
-  - ✅ All technical terms abstracted to business language
+- [x] 所有功能需求都有明確的驗收條件
+- [x] 使用者情境涵蓋主要流程
+- [x] 功能符合成功標準中定義的可衡量結果
+- [x] 無實作細節滲入規格
 
-## Notes
+## 更新摘要
 
-### Validation Summary
+### 2025-11-06: 補充使用者位置標記功能
 
-✅ **All checklist items passed**. The specification is ready for the next phase.
+**新增需求**:
+- FR-004-1: 顯示使用者當前位置標記（藍色圓點 + 半透明光圈）
+- FR-004-2: 定位成功/失敗時的標記顯示邏輯
+- FR-004-3: 定位狀態視覺回饋（成功指示器、錯誤提示）
 
-### API Contracts Rationale
+**更新的 User Story 1 驗收情境**:
+- AS-1: 地圖顯示圖書館標記 + 使用者位置標記
+- AS-2: 定位成功時顯示「已定位」指示器
+- AS-3: 定位失敗時顯示錯誤提示
 
-FR-040 ~ FR-043 define API contracts (GET /realtime, /predict, /libraries, /suggestions). These are retained as they represent **external interface specifications** (what the system exposes), not internal implementation details (how it's built). This follows industry standards (e.g., OpenAPI) where API contracts are part of requirements.
+**更新的 Success Criteria**:
+- SC-002: 繪製時間包含使用者位置標記
+- SC-009: 定位成功時的視覺回饋
+- SC-010: 定位失敗時的錯誤提示與重試
 
-### Recommendations for Next Steps
+**更新的 Edge Cases**:
+- 定位權限被拒絕（初次開啟應用程式）
+- 定位服務不可用或超時
 
-1. ✅ Proceed to `/speckit.plan` for implementation planning
-2. Consider creating a separate API specification document if needed for frontend-backend contract
-3. Review Phase 2 features with stakeholders after MVP delivery
+## 備註
+
+- 規格更新後所有檢查項目均通過
+- 使用者位置標記功能已完整定義，包含成功/失敗情境
+- 可以進入下一階段：執行 `/speckit.tasks` 更新任務清單
