@@ -1,0 +1,209 @@
+# Cloud SQL 資料庫配置契約規格
+#
+# 本檔案定義 Cloud SQL PostgreSQL 實例的標準配置
+# 用於確保開發、測試與生產環境的一致性
+#
+# 版本: 1.0
+# 最後更新: 2025-11-07
+
+---
+# 基本配置
+instance:
+  name: "tpml-seat-tracker-db"
+  database_version: "POSTGRES_15"
+  region: "asia-east1"
+  tier: "db-f1-micro"  # 0.6GB RAM, 共享 CPU
+  availability_type: "ZONAL"  # 非高可用性（降低成本）
+
+  # 儲存配置
+  storage:
+    type: "PD_SSD"
+    size_gb: 10
+    auto_resize: true
+    auto_resize_limit: 50  # 最大自動擴展至 50GB
+
+  # 網路配置
+  network:
+    ip_configuration:
+      ipv4_enabled: true  # 啟用 Public IP
+      require_ssl: false  # Cloud SQL Connector 自動處理 TLS
+      authorized_networks: []  # 透過 Cloud SQL Connector 連線，無需設定
+
+  # 備份配置
+  backup:
+    enabled: true
+    start_time: "03:00"  # 每日凌晨 3 點（台北時間 GMT+8）
+    point_in_time_recovery: false  # 關閉 PITR（降低成本）
+    retained_backups: 7  # 保留 7 天備份
+
+  # 維護視窗
+  maintenance:
+    day: "SUNDAY"
+    hour: 2  # 凌晨 2 點（台北時間）
+    update_track: "stable"
+
+  # 資料庫旗標（效能調校）
+  flags:
+    - name: "max_connections"
+      value: "100"
+    - name: "shared_buffers"
+      value: "32MB"  # db-f1-micro 建議值
+
+# 資料庫與使用者配置
+databases:
+  - name: "tpml_seat_tracker"
+    charset: "UTF8"
+    collation: "en_US.UTF8"
+
+users:
+  - name: "tpml_user"
+    password: "<由 Secret Manager 管理>"
+    iam_auth: false  # 可改為 true 啟用 IAM 認證
+    privileges:
+      - database: "tpml_seat_tracker"
+        grants: ["CONNECT", "CREATE", "SELECT", "INSERT", "UPDATE", "DELETE"]
+
+# 連線資訊
+connection:
+  connection_name: "PROJECT_ID:asia-east1:tpml-seat-tracker-db"
+  format: "projects/{PROJECT_ID}/locations/{REGION}/instances/{INSTANCE_NAME}"
+
+  # 連線方式（三選一）
+  methods:
+    - name: "Cloud SQL Python Connector"
+      recommended: true
+      description: "透過 google-cloud-sql-connector 函式庫連線"
+      connection_string: "由 Connector 動態管理"
+      security: "自動 TLS 1.3 加密 + IAM 認證支援"
+
+    - name: "Unix Socket"
+      recommended: false
+      description: "透過 Cloud Run --add-cloudsql-instances 連線"
+      connection_string: "postgresql://USER:PASSWORD@/DBNAME?host=/cloudsql/CONNECTION_NAME"
+      security: "TLS 加密"
+      limitations: "不支援 asyncpg"
+
+    - name: "TCP/IP"
+      recommended: false
+      description: "直接 TCP 連線（不建議）"
+      connection_string: "postgresql://USER:PASSWORD@PUBLIC_IP:5432/DBNAME"
+      security: "需手動配置 TLS"
+
+# 建立實例指令
+create_command: |
+  gcloud sql instances create tpml-seat-tracker-db \
+    --database-version=POSTGRES_15 \
+    --tier=db-f1-micro \
+    --region=asia-east1 \
+    --availability-type=ZONAL \
+    --storage-type=SSD \
+    --storage-size=10GB \
+    --storage-auto-increase \
+    --storage-auto-increase-limit=50 \
+    --backup-start-time=03:00 \
+    --retained-backups-count=7 \
+    --maintenance-window-day=SUNDAY \
+    --maintenance-window-hour=2 \
+    --database-flags=max_connections=100,shared_buffers=32MB
+
+# 建立資料庫指令
+create_database_command: |
+  gcloud sql databases create tpml_seat_tracker \
+    --instance=tpml-seat-tracker-db \
+    --charset=UTF8 \
+    --collation=en_US.UTF8
+
+# 建立使用者指令（密碼認證）
+create_user_command: |
+  gcloud sql users create tpml_user \
+    --instance=tpml-seat-tracker-db \
+    --password="$(gcloud secrets versions access latest --secret=database-password)"
+
+# 建立使用者指令（IAM 認證，建議）
+create_iam_user_command: |
+  # 步驟 1: 取得 Cloud Run Service Account
+  PROJECT_NUMBER=$(gcloud projects describe PROJECT_ID --format="value(projectNumber)")
+  SERVICE_ACCOUNT="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
+
+  # 步驟 2: 建立 IAM 資料庫使用者
+  gcloud sql users create ${SERVICE_ACCOUNT} \
+    --instance=tpml-seat-tracker-db \
+    --type=CLOUD_IAM_SERVICE_ACCOUNT
+
+  # 步驟 3: 在資料庫中授予權限（需連線至資料庫執行 SQL）
+  psql "host=/cloudsql/PROJECT_ID:asia-east1:tpml-seat-tracker-db dbname=postgres user=postgres" <<EOF
+  GRANT ALL PRIVILEGES ON DATABASE tpml_seat_tracker TO "${SERVICE_ACCOUNT}@PROJECT_ID.iam";
+  EOF
+
+# 成本估算
+cost_estimate:
+  monthly_usd:
+    instance: "$15-20"  # db-f1-micro + Public IP
+    storage: "$1-2"     # 10GB SSD
+    backup: "$1-2"      # 7 天備份
+    network: "$1-2"     # 出口流量
+    total: "$18-26"
+
+  cost_optimization_tips:
+    - "使用 ZONAL（非 HA）配置節省 ~50% 成本"
+    - "storage_auto_increase_limit 設定上限避免意外成本"
+    - "監控連線數，避免超過 max_connections 導致效能問題"
+    - "考慮使用 IAM 認證移除密碼管理成本"
+
+# 升級路徑（未來需求）
+upgrade_path:
+  scenario: "流量增長或需要高可用性"
+  changes:
+    - tier: "db-g1-small"  # 1.7GB RAM
+      cost_impact: "+$10-15/月"
+    - availability_type: "REGIONAL"  # 啟用 HA
+      cost_impact: "+100%（約雙倍成本）"
+    - point_in_time_recovery: true  # 啟用 PITR
+      cost_impact: "+$5-10/月"
+    - private_ip: true  # 改為 Private IP
+      additional_requirements: "需建立 VPC Connector (+$30/月)"
+
+# 監控與告警建議
+monitoring:
+  metrics_to_watch:
+    - name: "database/cpu/utilization"
+      threshold: "> 80%"
+      action: "考慮升級至 db-g1-small"
+    - name: "database/memory/utilization"
+      threshold: "> 85%"
+      action: "考慮升級機器類型"
+    - name: "database/disk/utilization"
+      threshold: "> 80%"
+      action: "檢查 auto_resize 設定"
+    - name: "database/postgresql/num_backends"
+      threshold: "> 80（max_connections 的 80%）"
+      action: "優化連線池或增加 max_connections"
+
+# 安全性檢查清單
+security_checklist:
+  - name: "密碼強度"
+    check: "使用強密碼（至少 16 字元，包含大小寫字母、數字、符號）"
+  - name: "密碼管理"
+    check: "密碼儲存在 Secret Manager，不出現在程式碼或配置檔"
+  - name: "TLS 加密"
+    check: "透過 Cloud SQL Connector 連線（自動 TLS 1.3 加密）"
+  - name: "最小權限原則"
+    check: "應用程式使用者僅授予必要權限（非 SUPERUSER）"
+  - name: "備份驗證"
+    check: "定期驗證備份可正常還原"
+  - name: "IAM 認證"
+    check: "考慮啟用 IAM 認證（移除密碼）"
+
+# 常見問題
+faq:
+  - q: "為什麼選擇 Public IP 而非 Private IP？"
+    a: "成本考量。Private IP 需要 VPC Connector（~$30/月），而 Cloud SQL Connector 已提供 TLS 加密，安全性足夠。"
+
+  - q: "db-f1-micro 效能夠用嗎？"
+    a: "適合初期部署（< 1000 使用者）。若 CPU 使用率持續 > 80%，建議升級至 db-g1-small。"
+
+  - q: "如何遷移本地資料至 Cloud SQL？"
+    a: "使用 pg_dump 匯出本地資料，透過 Cloud SQL Proxy 或 psql 匯入。詳見 quickstart.md。"
+
+  - q: "需要啟用 Point-in-Time Recovery（PITR）嗎？"
+    a: "初期不需要（增加成本）。PITR 適合需要精確時間點復原的應用（例如金融系統）。"

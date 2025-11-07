@@ -1,0 +1,110 @@
+# 後端 Cloud Run 環境變數契約規格
+#
+# 本檔案定義後端 Cloud Run 服務所需的所有環境變數
+# 格式：YAML（僅作為文件，不直接用於部署）
+#
+# 版本: 1.0
+# 最後更新: 2025-11-07
+
+---
+# 必要環境變數（Required）
+required:
+  # Cloud SQL 連線參數
+  CLOUD_SQL_CONNECTION_NAME:
+    type: string
+    format: "PROJECT_ID:REGION:INSTANCE_ID"
+    example: "three-birds-on-mountain:asia-east1:tpml-seat-tracker-db"
+    description: "Cloud SQL 實例的連線名稱"
+    source: "直接設定於 Cloud Run 環境變數"
+
+  DB_USER:
+    type: string
+    example: "tpml_user"
+    description: "資料庫使用者名稱"
+    source: "Secret Manager secret: database-user"
+    secret: false  # 不敏感，可直接設定
+
+  DB_PASSWORD:
+    type: string
+    example: "<secret>"
+    description: "資料庫密碼（若使用 IAM 認證可省略）"
+    source: "Secret Manager secret: database-password"
+    secret: true  # 敏感資訊
+
+  DB_NAME:
+    type: string
+    example: "tpml_seat_tracker"
+    description: "資料庫名稱"
+    source: "直接設定於 Cloud Run 環境變數"
+
+  API_BASE_URL:
+    type: string
+    format: url
+    example: "https://tpml-backend-xxx.run.app"
+    description: "後端 API 的公開 URL（部署後取得）"
+    source: "直接設定於 Cloud Run 環境變數"
+
+# 選用環境變數（Optional）
+optional:
+  LOG_LEVEL:
+    type: string
+    enum: ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+    default: "INFO"
+    example: "INFO"
+    description: "日誌輸出等級"
+    source: "直接設定於 Cloud Run 環境變數"
+
+  EXTERNAL_API_URL:
+    type: string
+    format: url
+    example: "https://tpml.gov.taipei/api/seats"
+    description: "外部座位資料 API URL"
+    source: "直接設定於 Cloud Run 環境變數"
+
+  ENABLE_IAM_AUTH:
+    type: boolean
+    default: false
+    example: true
+    description: "是否啟用 IAM 資料庫認證（啟用後 DB_PASSWORD 可省略）"
+    source: "直接設定於 Cloud Run 環境變數"
+
+  CORS_ORIGINS:
+    type: string
+    format: "逗號分隔的 URL 清單或 *"
+    default: "*"
+    example: "https://tpml-frontend-xxx.run.app,https://custom-domain.com"
+    description: "允許的 CORS origins（建議明確指定前端 URL）"
+    source: "直接設定於 Cloud Run 環境變數"
+
+# 部署範例指令
+deployment_example: |
+  # 使用 gcloud CLI 部署（參考）
+  gcloud run deploy tpml-backend \
+    --region=asia-east1 \
+    --image=asia-east1-docker.pkg.dev/PROJECT_ID/containers/backend:latest \
+    --set-env-vars="CLOUD_SQL_CONNECTION_NAME=PROJECT_ID:asia-east1:tpml-seat-tracker-db" \
+    --set-env-vars="DB_USER=tpml_user" \
+    --set-secrets="DB_PASSWORD=database-password:latest" \
+    --set-env-vars="DB_NAME=tpml_seat_tracker" \
+    --set-env-vars="API_BASE_URL=https://tpml-backend-xxx.run.app" \
+    --set-env-vars="LOG_LEVEL=INFO" \
+    --set-env-vars="CORS_ORIGINS=https://tpml-frontend-xxx.run.app" \
+    --cpu=1 \
+    --memory=1Gi \
+    --min-instances=0 \
+    --max-instances=10 \
+    --concurrency=80 \
+    --timeout=300 \
+    --port=8000 \
+    --allow-unauthenticated
+
+# 驗證清單
+validation_checklist:
+  - name: "必要環境變數已設定"
+    check: "所有 required 欄位都已提供值"
+  - name: "資料庫密碼透過 Secret Manager"
+    check: "DB_PASSWORD 使用 --set-secrets 而非 --set-env-vars"
+  - name: "CORS 設定正確"
+    check: "CORS_ORIGINS 包含前端 Cloud Run URL"
+  - name: "API_BASE_URL 正確"
+    check: "API_BASE_URL 與部署後的服務 URL 一致"
