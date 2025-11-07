@@ -12,7 +12,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 COPY pyproject.toml uv.lock* ./
 
 # Install dependencies
-RUN uv pip install --system . || pip install fastapi uvicorn sqlalchemy alembic apscheduler httpx pydantic-settings loguru python-dotenv asyncpg psycopg2-binary
+RUN uv pip install --system . || pip install fastapi uvicorn sqlalchemy alembic apscheduler httpx pydantic-settings loguru python-dotenv asyncpg psycopg2-binary "cloud-sql-python-connector[asyncpg]"
 
 # Stage 2: Runtime
 FROM python:3.12-slim
@@ -42,6 +42,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
 
-# Run application (由 docker-compose command 覆蓋，移除 ENTRYPOINT 以便在開發模式使用 --reload)
-# ENTRYPOINT 移除，改用 docker-compose 的 command 控制
+# Production command (使用 2 workers)
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
 

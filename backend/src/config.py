@@ -7,8 +7,15 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """應用程式設定"""
 
-    # 資料庫
+    # 資料庫（保留用於本地開發）
     database_url: str = "postgresql+asyncpg://tpml_user:tpml_password@localhost:5432/tpml_seat_tracker"
+
+    # Cloud SQL 連線參數（生產環境）
+    cloud_sql_connection_name: str = ""
+    db_user: str = "tpml_user"
+    db_password: str | None = None
+    db_name: str = "tpml_seat_tracker"
+    enable_iam_auth: bool = False
 
     # API 設定
     api_base_url: str = "http://localhost:8000"
@@ -16,7 +23,9 @@ class Settings(BaseSettings):
 
     # 外部 API
     external_api_url: str = "https://example.com/api/seats"
-    mapbox_token: str = ""  # 測試用，可選
+
+    # CORS
+    cors_origins: str = "*"
 
     model_config = SettingsConfigDict(
         env_file=".env",

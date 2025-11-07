@@ -16,6 +16,7 @@ dependencies = [
     "asyncpg>=0.29.0",
     "psycopg2-binary>=2.9.0",  # 同步 PostgreSQL driver，供 Alembic 使用
     "greenlet>=3.0.0",  # SQLAlchemy 異步功能所需
+    "cloud-sql-python-connector[asyncpg]>=1.0.0",  # Cloud SQL Python Connector
 ]
 
 [project.optional-dependencies]

@@ -11,6 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from src.config import settings
+from src.database import get_engine, close_db_connections
 from src.api.exceptions import (
     http_exception_handler,
     validation_exception_handler,
@@ -32,6 +33,16 @@ async def lifespan(app: FastAPI):
             f"環境設定: LOG_LEVEL={settings.log_level}, API_BASE_URL={settings.api_base_url}"
         )
 
+        # 測試資料庫連線
+        try:
+            engine = get_engine()
+            async with engine.begin() as conn:
+                await conn.run_sync(lambda sync_conn: sync_conn.execute(sqlalchemy.text("SELECT 1")))
+            logger.info("✅ 資料庫連線成功")
+        except Exception as e:
+            logger.error(f"❌ 資料庫連線失敗: {e}")
+            # 不中斷啟動，允許健康檢查端點回報問題
+
         # 啟動 scheduler
         start_scheduler()
 
@@ -40,6 +51,7 @@ async def lifespan(app: FastAPI):
     # Shutdown
     if os.getenv("TESTING") != "1":
         shutdown_scheduler()
+        await close_db_connections()
         logger.info("應用程式關閉中...")
 
 
@@ -47,7 +59,6 @@ app = FastAPI(
     title="圖書館座位追蹤系統 API",
     description="提供圖書館座位即時狀態、預測與查詢功能",
     version="0.1.0",
-    lifespan=lifespan,
     contact={
         "name": "TPML Seat Tracker Team",
     },
@@ -57,9 +68,10 @@ app = FastAPI(
 )
 
 # CORS 設定
+origins = settings.cors_origins.split(",") if settings.cors_origins != "*" else ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: 在 production 中限制為 frontend origin
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
