@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Map as MapboxMap, MapMouseEvent } from 'mapbox-gl';
 import type { LibraryWithSeat } from '@/types/library';
 import { MarkerLayer } from './MarkerLayer';
+import { UserLocationMarker } from './UserLocationMarker';
 import { captureError } from '@/services/errorLogger';
 
 const DEFAULT_COORDINATE: [number, number] = [121.535404, 25.042233];
@@ -185,12 +186,18 @@ export const MapView = ({
         </div>
       )}
       {isReady && mapRef.current && (
-        <MarkerLayer
-          map={mapRef.current}
-          libraries={libraries}
-          selectedLibraryId={selectedLibraryId}
-          onMarkerClick={onMarkerClick}
-        />
+        <>
+          <MarkerLayer
+            map={mapRef.current}
+            libraries={libraries}
+            selectedLibraryId={selectedLibraryId}
+            onMarkerClick={onMarkerClick}
+          />
+          <UserLocationMarker
+            map={mapRef.current}
+            location={userLocation || null}
+          />
+        </>
       )}
     </div>
   );

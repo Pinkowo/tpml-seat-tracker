@@ -27,7 +27,7 @@
 
 - [x] T001 [P] 建立 backend 目錄結構 (backend/src/{api,models,services,db}/)
 - [x] T002 [P] 建立 frontend 目錄結構 (frontend/src/{components,pages,store,services,hooks,types}/)
-- [ ] T003 [P] 建立 docker-compose.yml，包含 PostgreSQL 15 服務定義
+- [x] T003 [P] 建立 docker-compose.yml，包含 PostgreSQL 15 服務定義
 - [x] T004 [P] 建立 backend/.env.example，包含必要的環境變數
 - [x] T005 [P] 建立 frontend/.env.example，包含 Mapbox token 佔位符
 
@@ -52,7 +52,7 @@
   - **主色**: Primary `#5AB4C5`, Secondary `#F5BA4B`
   - **座位狀態色**: Available `#76A732`, Full `#ADB8BE`
 - [x] T014 [P] 在 frontend/tsconfig.json 設定 TypeScript strict mode
-- [ ] T015 [P] 在 frontend/ 設定 ESLint 與 Prettier
+- [x] T015 [P] 在 frontend/ 設定 ESLint 與 Prettier
 
 ### 1.4 測試基礎設施
 
@@ -121,6 +121,7 @@
 ### 3.2 Frontend - 地圖元件
 
 - [x] T041 [P] [US1] 在 frontend/src/hooks/useGeolocation.ts 建立 useGeolocation hook，取得使用者位置
+  - **注意**: 目前使用 `navigator.geolocation`，需更新為 Flutter JS Bridge 整合（見 T112-T115）
 - [x] T042 [P] [US1] 在 frontend/src/types/library.ts 建立 Library 與 SeatStatus 的 TypeScript types
 - [x] T043 [US1] 在 frontend/src/components/map/MapView.tsx 建立 Mapbox 地圖初始化元件
   - **設計規範**: 參考 `specs/design/components.md` - 地圖區域規格
@@ -142,12 +143,12 @@
 
 ### 3.3 測試 (US1)
 
-- [ ] T048a [P] [US1] 在 backend/tests/conftest.py 建立資料庫 session 的 pytest fixtures
-- [ ] T048b [P] [US1] 在 backend/tests/contract/test_libraries_contract.py 撰寫 GET /api/v1/libraries endpoint 的 contract tests
-- [ ] T048c [P] [US1] 在 backend/tests/contract/test_realtime_contract.py 撰寫 GET /api/v1/realtime endpoint 的 contract tests
-- [ ] T048d [P] [US1] 在 backend/tests/unit/services/test_distance.py 撰寫 Haversine 距離計算的 unit tests
-- [ ] T048e [P] [US1] 在 frontend/tests/integration/test_map_markers.test.ts 使用 mock API 撰寫地圖標記渲染的 integration tests
-- [ ] T048f [P] [US1] 在 frontend/tests/unit/hooks/test_useGeolocation.test.ts 撰寫 useGeolocation hook 的 unit tests
+- [x] T048a [P] [US1] 在 backend/tests/conftest.py 建立資料庫 session 的 pytest fixtures
+- [x] T048b [P] [US1] 在 backend/tests/contract/test_libraries_contract.py 撰寫 GET /api/v1/libraries endpoint 的 contract tests
+- [x] T048c [P] [US1] 在 backend/tests/contract/test_realtime_contract.py 撰寫 GET /api/v1/realtime endpoint 的 contract tests
+- [x] T048d [P] [US1] 在 backend/tests/unit/services/test_distance.py 撰寫 Haversine 距離計算的 unit tests
+- [x] T048e [P] [US1] 在 frontend/tests/integration/test_map_markers.test.ts 使用 mock API 撰寫地圖標記渲染的 integration tests
+- [x] T048f [P] [US1] 在 frontend/tests/unit/hooks/test_useGeolocation.test.ts 撰寫 useGeolocation hook 的 unit tests
 
 ### 3.4 版面調整與互動（追加需求）
 
@@ -224,7 +225,99 @@
     - ✓ Console 無 API 錯誤或型別錯誤
   - **清理**: 確認整合無誤後，刪除或註解 `frontend/src/mocks/libraryData.ts`
 
-**檢查點**: 此時 User Story 1 應該完全可以獨立運作與測試（使用真實 API）
+### 3.6 使用者位置標記與 Flutter JS Bridge 整合 🆕 CRITICAL
+
+**背景**: 根據更新的 spec.md (FR-004-1, FR-004-2, FR-004-3)，需要在地圖上顯示使用者當前位置標記，並透過 Flutter JS Bridge 整合定位功能。
+
+**新增功能需求**:
+- FR-004-1: 顯示使用者當前位置標記（藍色圓點 + 半透明光圈）
+- FR-004-2: 定位成功/失敗時的標記顯示邏輯
+- FR-004-3: 定位狀態視覺回饋（成功指示器、錯誤提示）
+
+**Flutter JS Bridge 整合** (參考 `docs/microservice_requirements.md`):
+
+- [x] T112 [P] [US1] 在 frontend/src/services/flutterBridge.ts 建立 Flutter JS Bridge 服務
+  - **目標**: 封裝 `window.flutterObject.postMessage()` 呼叫邏輯
+  - **功能**:
+    - `checkBridgeAvailable()`: 檢查 `window.flutterObject` 是否存在
+    - `requestLocation()`: 發送定位請求 `{ name: 'location', data: null }`
+    - `setupLocationListener(callback)`: 監聽定位回應
+  - **錯誤處理**: Bridge 不可用時回傳 null，不拋出錯誤
+
+- [x] T113 [US1] 更新 frontend/src/hooks/useGeolocation.ts 以支援 Flutter JS Bridge
+  - **目標**: 優先使用 Flutter JS Bridge 取得定位，降級使用 `navigator.geolocation`
+  - **邏輯流程**:
+    1. 檢查 `window.flutterObject` 是否存在
+    2. 若存在：使用 `flutterBridge.requestLocation()`
+    3. 若不存在：降級使用現有的 `navigator.geolocation`
+  - **回應處理**:
+    - 成功: `data` 為 Position JSON → 更新 `location` state
+    - 失敗: `data` 為 `[]` → 設定 `error` state
+  - **保持現有 API**: 確保 `GeolocationState` 介面不變，維持向下相容
+
+- [x] T114 [P] [US1] 在 frontend/src/components/map/UserLocationMarker.tsx 建立使用者位置標記元件
+  - **設計規範**:
+    - **標記樣式**: 藍色圓點 16x16px（`#5AB4C5` Primary/500）
+    - **光圈效果**: 外圍半透明光圈 radius 32px，脈衝動畫（opacity 0.2 → 0.6）
+    - **陰影**: `0 2px 8px rgba(90, 180, 197, 0.4)`
+  - **實作細節**:
+    - 使用 Mapbox GL JS `Marker` API
+    - 接收 `map` 與 `location` props
+    - 定位成功時渲染，失敗時不渲染
+
+- [x] T115 [US1] 在 frontend/src/components/map/MapView.tsx 整合使用者位置標記
+  - **目標**: 在地圖上渲染 `UserLocationMarker` 元件
+  - **條件渲染**: 僅當 `userLocation` 不為 null 且 `geolocation.error` 為 null 時顯示
+  - **位置更新**: 當 `userLocation` 改變時，標記自動更新位置
+
+**定位狀態視覺回饋**:
+
+- [x] T116 [P] [US1] 在 frontend/src/components/map/LocationStatusIndicator.tsx 建立定位狀態指示器元件
+  - **設計規範**:
+    - **成功狀態**: 右下角顯示「✓ 已定位」，背景 `#76A732` (Green/500)，文字白色
+    - **尺寸**: 圓角 20px，padding 8px 12px，字體 12px/Semibold
+    - **位置**: 地圖右下角，距離邊緣 16px
+  - **顯示條件**: `geolocation.location !== null && geolocation.error === null`
+
+- [x] T117 [US1] 在 frontend/src/pages/HomePage.tsx 顯示定位錯誤提示
+  - **目標**: 當 `geolocation.error` 不為 null 時，在主畫面顯示錯誤訊息
+  - **設計規範**:
+    - **背景**: 提醒色 `rgba(253, 133, 58, 0.95)` (Orange/500)
+    - **位置**: 頂部中央，距離頂部 80px
+    - **圓角**: 16px
+    - **陰影**: `0 4px 16px rgba(0, 0, 0, 0.15)`
+  - **內容**: 顯示 `geolocation.error` 訊息 + 「重新定位」按鈕
+  - **互動**: 點擊「重新定位」按鈕呼叫 `geolocation.retry()`
+
+- [x] T118 [US1] 整合定位狀態指示器與錯誤提示到 HomePage
+  - **目標**: 在 `frontend/src/pages/HomePage.tsx` 渲染 `LocationStatusIndicator` 與錯誤提示
+  - **測試**: 驗證定位成功/失敗情境下的 UI 顯示正確
+
+**測試任務**:
+
+- [x] T119 [P] [US1] 在 frontend/tests/unit/services/test_flutterBridge.test.ts 撰寫 Flutter Bridge 服務的 unit tests
+  - **測試情境**:
+    - Bridge 可用時正確發送訊息
+    - Bridge 不可用時回傳 null
+    - Location listener 正確處理回應
+
+- [x] T120 [P] [US1] 在 frontend/tests/integration/test_geolocation_bridge.test.ts 撰寫定位整合測試
+  - **測試情境**:
+    - Flutter Bridge 可用時使用 Bridge
+    - Flutter Bridge 不可用時降級使用 navigator.geolocation
+    - 成功/失敗回應的狀態更新
+
+- [x] T121 [P] [US1] 在 frontend/tests/integration/test_user_location_marker.test.ts 撰寫使用者位置標記的渲染測試
+  - **測試情境**:
+    - 定位成功時標記正確渲染
+    - 定位失敗時標記不渲染
+    - 位置更新時標記位置正確更新
+
+**檢查點**: 使用者位置標記與 Flutter JS Bridge 整合完成
+
+---
+
+**檢查點**: 此時 User Story 1 應該完全可以獨立運作與測試（使用真實 API + 使用者位置標記）
 
 ---
 
@@ -267,9 +360,9 @@
 
 ### 4.3 測試 (US2)
 
-- [ ] T056a [P] [US2] 在 backend/tests/contract/test_libraries_sorting.py 撰寫 /libraries 排序參數的 contract tests
-- [ ] T056b [P] [US2] 在 backend/tests/unit/services/test_library_service.py 撰寫雙重排序邏輯的 unit tests
-- [ ] T056c [P] [US2] 在 frontend/tests/integration/test_library_list.test.ts 撰寫列表排序行為的 integration tests
+- [x] T056a [P] [US2] 在 backend/tests/contract/test_libraries_sorting.py 撰寫 /libraries 排序參數的 contract tests
+- [x] T056b [P] [US2] 在 backend/tests/unit/services/test_library_service.py 撰寫雙重排序邏輯的 unit tests
+- [x] T056c [P] [US2] 在 frontend/tests/integration/test_library_list.test.ts 撰寫列表排序行為的 integration tests
 
 **檢查點**: 此時 User Story 1 與 2 應該都能獨立運作
 
@@ -305,8 +398,8 @@
 
 ### 5.3 測試 (US3)
 
-- [ ] T063a [P] [US3] 在 backend/tests/unit/services/test_opening_hours.py 撰寫營業時間計算的 unit tests
-- [ ] T063b [P] [US3] 在 frontend/tests/integration/test_closing_warning.test.ts 撰寫倒數警告顯示的 integration tests
+- [x] T063a [P] [US3] 在 backend/tests/unit/services/test_opening_hours.py 撰寫營業時間計算的 unit tests
+- [x] T063b [P] [US3] 在 frontend/tests/integration/test_closing_warning.test.ts 撰寫倒數警告顯示的 integration tests
 
 **檢查點**: User Story 1、2 與 3 現在應該都能獨立運作
 
@@ -322,7 +415,7 @@
 
 - [x] T064 [P] [US4] 在 backend/src/models/seat.py 建立 SeatHistory SQLAlchemy model
 - [x] T065 [P] [US4] 在 backend/src/models/prediction.py 建立 PredictionResult SQLAlchemy model
-- [ ] T066 [P] [US4] 在 backend/src/models/model_registry.py 建立 ModelRegistry SQLAlchemy model
+- [x] T066 [P] [US4] 在 backend/src/models/model_registry.py 建立 ModelRegistry SQLAlchemy model
 
 ### 6.2 Backend - 資料收集 (Task A)
 
@@ -363,11 +456,11 @@
 
 ### 6.6 測試 (US4)
 
-- [ ] T081a [P] [US4] 在 backend/tests/contract/test_predict_contract.py 撰寫 GET /api/v1/predict endpoint 的 contract tests
-- [ ] T081b [P] [US4] 在 backend/tests/unit/services/test_seat_collector.py 使用外部 API mocks 撰寫座位收集器的 unit tests
-- [ ] T081c [P] [US4] 在 backend/tests/unit/services/test_prediction_trainer.py 撰寫預測訓練器（Champion/Challenger）的 unit tests
-- [ ] T081d [P] [US4] 在 backend/tests/unit/services/test_prediction_service.py 撰寫 fallback 邏輯（移動平均）的 unit tests
-- [ ] T081e [US4] 在 backend/tests/integration/test_prediction_flow.py 撰寫預測資料流的 integration tests
+- [x] T081a [P] [US4] 在 backend/tests/contract/test_predict_contract.py 撰寫 GET /api/v1/predict endpoint 的 contract tests
+- [x] T081b [P] [US4] 在 backend/tests/unit/services/test_seat_collector.py 使用外部 API mocks 撰寫座位收集器的 unit tests
+- [x] T081c [P] [US4] 在 backend/tests/unit/services/test_prediction_trainer.py 撰寫預測訓練器（Champion/Challenger）的 unit tests
+- [x] T081d [P] [US4] 在 backend/tests/unit/services/test_prediction_service.py 撰寫 fallback 邏輯（移動平均）的 unit tests
+- [x] T081e [US4] 在 backend/tests/integration/test_prediction_flow.py 撰寫預測資料流的 integration tests
 
 **檢查點**: User Story 1-4 現在應該都能獨立運作
 
@@ -406,9 +499,9 @@
 
 ### 7.3 測試 (US5)
 
-- [ ] T090a [P] [US5] 在 frontend/tests/integration/test_polling.test.ts 撰寫 10 分鐘輪詢行為的 integration tests
-- [ ] T090b [P] [US5] 在 frontend/tests/unit/hooks/test_useVisibilityRefresh.test.ts 撰寫 Page Visibility API 整合的 unit tests
-- [ ] T090c [US5] 在 backend/tests/integration/test_scheduler.py 撰寫 APScheduler jobs 的 integration tests
+- [x] T090a [P] [US5] 在 frontend/tests/integration/test_polling.test.ts 撰寫 10 分鐘輪詢行為的 integration tests
+- [x] T090b [P] [US5] 在 frontend/tests/unit/hooks/test_useVisibilityRefresh.test.ts 撰寫 Page Visibility API 整合的 unit tests
+- [x] T090c [US5] 在 backend/tests/integration/test_scheduler.py 撰寫 APScheduler jobs 的 integration tests
 
 **檢查點**: 所有 User Story 現在應該都能獨立運作
 
@@ -421,29 +514,29 @@
 ### 8.1 API 健康檢查與文件
 
 - [x] T091 [P] 在 backend/src/api/routes/health.py 建立 GET /api/v1/health endpoint，包含資料庫檢查
-- [ ] T092 [P] 在 backend/src/main.py 設定 FastAPI OpenAPI 文件 metadata
-- [ ] T093 [P] 在 backend/src/api/routes/ 新增 API endpoint 描述與範例
+- [x] T092 [P] 在 backend/src/main.py 設定 FastAPI OpenAPI 文件 metadata
+- [x] T093 [P] 在 backend/src/api/routes/ 新增 API endpoint 描述與範例
 
 ### 8.2 錯誤監控與效能
 
-- [ ] T094 [P] 在 backend/src/main.py 新增 request duration metrics middleware
-- [ ] T095 [P] 在 backend/src/services/error_tracking.py 設定錯誤追蹤整合點
-- [ ] T096 [P] 在 backend/alembic/versions/006_add_indexes.py 新增資料庫查詢最佳化索引
+- [x] T094 [P] 在 backend/src/main.py 新增 request duration metrics middleware
+- [x] T095 [P] 在 backend/src/services/error_tracking.py 設定錯誤追蹤整合點
+- [x] T096 [P] 在 backend/alembic/versions/006_add_indexes.py 新增資料庫查詢最佳化索引
 - [x] T097 [P] 在 frontend/src/services/errorLogger.ts 實作前端錯誤日誌服務
 
 ### 8.3 測試與驗證
 
-- [ ] T098 [P] 在 frontend/src/components/map/ 新增 ARIA labels 到地圖標記與互動元素
-- [ ] T099 [P] 在 frontend/src/components/ 新增鍵盤導航支援（Tab 順序，Enter 觸發）
-- [ ] T100 [P] 在 frontend/src/components/map/MarkerLayer.tsx 驗證色盲友善設計（綠/灰/白組合）
+- [x] T098 [P] 在 frontend/src/components/map/ 新增 ARIA labels 到地圖標記與互動元素
+- [x] T099 [P] 在 frontend/src/components/ 新增鍵盤導航支援（Tab 順序，Enter 觸發）
+- [x] T100 [P] 在 frontend/src/components/map/MarkerLayer.tsx 驗證色盲友善設計（綠/灰/白組合）
 
 ### 8.4 部署與文件
 
-- [ ] T101 [P] 在 backend/Dockerfile 建立 backend 的 Dockerfile，使用 multi-stage build
-- [ ] T102 [P] 在 frontend/Dockerfile 建立 frontend 的 Dockerfile，使用 nginx
-- [ ] T103 [P] 在 backend/Dockerfile 與 frontend/Dockerfile 使用 layer caching 最佳化 Docker images
-- [ ] T104 [P] 在 README.md 建立完整的 README，包含快速入門指南
-- [ ] T105 [P] 在 specs/001-library-seat-tracker/quickstart.md 驗證 quickstart.md 設置說明
+- [x] T101 [P] 在 backend/Dockerfile 建立 backend 的 Dockerfile，使用 multi-stage build
+- [x] T102 [P] 在 frontend/Dockerfile 建立 frontend 的 Dockerfile，使用 nginx
+- [x] T103 [P] 在 backend/Dockerfile 與 frontend/Dockerfile 使用 layer caching 最佳化 Docker images
+- [x] T104 [P] 在 README.md 建立完整的 README，包含快速入門指南
+- [x] T105 [P] 在 specs/001-library-seat-tracker/quickstart.md 驗證 quickstart.md 設置說明
 
 ---
 

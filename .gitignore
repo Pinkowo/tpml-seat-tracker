@@ -61,5 +61,69 @@ stylelintcache
 # --- Mapbox Token / API Key ---
 # 請確保敏感資訊存放於 .env 而非程式中
 mapbox_token.txt
+
+# --- Python 專案 (Backend) ---
 *.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# pytest
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
 /backend/logs/
+*.log
+
+# UV (Python package manager)
+.uv/
+uv.lock
+
+# Alembic
+alembic/versions/__pycache__/
