@@ -1,8 +1,4 @@
-.specify/.DS_Store
-specs/.DS_Store
-.DS_Store
-
-# --- Node & Vite 基本 ---
+# Node / Vite
 node_modules/
 dist/
 build/
@@ -11,119 +7,45 @@ build/
 .temp/
 *.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 package-lock.json
-yarn.lock
 pnpm-lock.yaml
+yarn.lock
 
-# --- 環境變數與私密金鑰 ---
+# Env files
 .env
 .env.*
 !.env.example
 *.local
 
-# --- 編譯輸出 ---
-/coverage
-/.parcel-cache
-/.eslintcache
+# Coverage / testing
+coverage/
+.vitest/
+.eslintcache
 
-# --- 系統檔與編輯器暫存 ---
+# System + editors
 .DS_Store
 Thumbs.db
 *.swp
 *.swo
 *.tmp
 *.bak
-
-# --- VSCode / IDE 設定 ---
 .vscode/
 .idea/
 *.iml
 
-# --- 測試檔案 ---
-/test-output
-/__tests__/
-/coverage/
-
-# --- 靜態檔暫存與快取 ---
+# Tool caches
 .cache-loader/
 npm-cache/
 .pnpm-store/
 .babel-cache/
 stylelintcache
 
-# --- 其他 ---
+# Archives / misc
 *.tgz
 *.zip
 
-# --- Mapbox Token / API Key ---
-# 請確保敏感資訊存放於 .env 而非程式中
+# Mapbox token hints
 mapbox_token.txt
-
-# --- Python 專案 (Backend) ---
-*.pyc
-*.pyo
-*.pyd
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
-venv/
-ENV/
-env/
-.venv
-
-# pytest
-.pytest_cache/
-.tox/
-.coverage
-.coverage.*
-htmlcov/
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Logs
-/backend/logs/
-*.log
-
-# UV (Python package manager)
-.uv/
-uv.lock
-
-# Alembic
-alembic/versions/__pycache__/
