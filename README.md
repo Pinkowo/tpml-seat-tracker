@@ -5,7 +5,6 @@ React + TypeScript single-page app that visualizes Taipei Public Library seat us
 ## Getting Started
 
 ```bash
-cd frontend
 npm install
 cp .env.example .env
 npm run dev
