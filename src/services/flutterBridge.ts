@@ -154,7 +154,7 @@ export function getLocationAsync(timeout: number = 10000): Promise<Position> {
       return;
     }
 
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
     let cleanup: (() => void) | null = null;
 
     // 設定超時

@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { checkBridgeAvailable, setupLocationListener, requestLocation as requestFlutterLocation, Position } from '@/services/flutterBridge';
+import type { Position } from '@/services/flutterBridge';
+import {
+  checkBridgeAvailable,
+  setupLocationListener,
+  requestLocation as requestFlutterLocation,
+} from '@/services/flutterBridge';
 
 const DEFAULT_CENTER = { lat: 25.042233, lng: 121.535404 };
 

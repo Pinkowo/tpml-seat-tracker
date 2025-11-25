@@ -42,6 +42,8 @@ This mode keeps every existing UI flow intact (React Query, adapters, map marker
 
 ## Deployment
 
+### Docker (local)
+
 The `Dockerfile` in this folder builds the production bundle and serves it through Nginx:
 
 ```bash
@@ -50,3 +52,12 @@ docker run -p 8080:80 tpml-seat-tracker-frontend
 ```
 
 Set the environment variables (Mapbox token, API base URL, mock flag) at build or runtime via Vite conventions.
+
+### GitHub Pages
+
+Pushing to `main` (or running the `Deploy Frontend` workflow manually) builds the site with mock data and publishes the `dist/` output to GitHub Pages via `actions/deploy-pages`. Before the workflow can succeed:
+
+1. Go to **Repository Settings → Secrets and variables → Actions → New repository secret** and add `MAPBOX_TOKEN` with your Mapbox access token.
+2. Enable GitHub Pages for the repository (Settings → Pages) and keep the default "GitHub Actions" source.
+
+The workflow sets `DEPLOY_TARGET=gh-pages`, so the build automatically uses the `/tpml-seat-tracker/` base path required by GitHub Pages.

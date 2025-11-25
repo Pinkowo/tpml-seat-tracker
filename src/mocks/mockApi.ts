@@ -17,10 +17,13 @@ const DEFAULT_OPEN_HOURS: Record<string, OpenHoursItem | null> = {
   sunday: null,
 };
 
-const cloneOpenHours = (overrides?: Partial<Record<string, OpenHoursItem | null>>) => ({
-  ...DEFAULT_OPEN_HOURS,
-  ...overrides,
-});
+const cloneOpenHours = (
+  overrides?: Partial<Record<string, OpenHoursItem | null>>
+): Record<string, OpenHoursItem | null> =>
+  ({
+    ...DEFAULT_OPEN_HOURS,
+    ...(overrides ?? {}),
+  }) as Record<string, OpenHoursItem | null>;
 
 const mockLibraries: LibraryApiItem[] = [
   {
@@ -136,7 +139,7 @@ const mockRealtimeSeats: RealtimeSeatItem[] = mockLibraries.map((library, index)
   };
 });
 
-const mockPredictionMap = {
+const mockPredictionMap: Record<string, PredictionApiResponse> = {
   臺北市立圖書館總館: {
     library_id: 1,
     predictions: [
