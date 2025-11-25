@@ -11,6 +11,14 @@ import type {
 } from '@/types/api';
 import { getApiClient } from '@/services/api';
 import { captureError } from '@/services/errorLogger';
+import {
+  getMockLibrariesResponse,
+  getMockPredictionResponse,
+  getMockRealtimeResponse,
+  mockDelay,
+} from '@/mocks/mockApi';
+
+const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 
 /**
  * 取得圖書館列表與座位資訊
@@ -28,6 +36,14 @@ export async function fetchLibraries(params?: {
   sort_by?: 'distance' | 'seats';
   branch_name?: string;
 }): Promise<LibrariesResponse> {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    return getMockLibrariesResponse({
+      branch_name: params?.branch_name,
+      sort_by: params?.sort_by,
+    });
+  }
+
   try {
     const client = await getApiClient();
     const response = await client.get<LibrariesResponse>('/api/v1/libraries', {
@@ -56,6 +72,11 @@ export async function fetchLibraries(params?: {
 export async function fetchRealtimeSeats(
   branch_name?: string
 ): Promise<RealtimeResponse> {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    return getMockRealtimeResponse(branch_name);
+  }
+
   try {
     const client = await getApiClient();
     const response = await client.get<RealtimeResponse>('/api/v1/realtime', {
@@ -79,6 +100,11 @@ export async function fetchRealtimeSeats(
 export async function fetchPredictions(
   branch_name: string
 ): Promise<PredictionApiResponse> {
+  if (USE_MOCK_DATA) {
+    await mockDelay();
+    return getMockPredictionResponse(branch_name);
+  }
+
   try {
     const client = await getApiClient();
     const response = await client.get<PredictionApiResponse>('/api/v1/predict', {
