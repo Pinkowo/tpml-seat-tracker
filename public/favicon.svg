@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="geometricPrecision">
+  <!-- Background: rounded square container -->
+  <rect width="32" height="32" rx="6" ry="6" fill="#0891B2"/>
+
+  <!-- Open book — left page -->
+  <path
+    d="M5 10 C5 10 5 9 6 9 L15 9.5 L15 24 L6 23.5 C5 23.5 5 22.5 5 22.5 Z"
+    fill="#FFFFFF"
+    opacity="1"
+  />
+
+  <!-- Left page inner lines (text rows) -->
+  <line x1="7" y1="12.5" x2="13" y2="12.5" stroke="#B2E4EE" stroke-width="1" stroke-linecap="round"/>
+  <line x1="7" y1="15"   x2="13" y2="15"   stroke="#B2E4EE" stroke-width="1" stroke-linecap="round"/>
+  <line x1="7" y1="17.5" x2="13" y2="17.5" stroke="#B2E4EE" stroke-width="1" stroke-linecap="round"/>
+  <line x1="7" y1="20"   x2="11" y2="20"   stroke="#B2E4EE" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- Open book — right page -->
+  <path
+    d="M27 10 C27 10 27 9 26 9 L17 9.5 L17 24 L26 23.5 C27 23.5 27 22.5 27 22.5 Z"
+    fill="#E0F7FA"
+    opacity="1"
+  />
+
+  <!-- Right page inner lines (text rows) -->
+  <line x1="19" y1="12.5" x2="25" y2="12.5" stroke="#7DCFDE" stroke-width="1" stroke-linecap="round"/>
+  <line x1="19" y1="15"   x2="25" y2="15"   stroke="#7DCFDE" stroke-width="1" stroke-linecap="round"/>
+  <line x1="19" y1="17.5" x2="25" y2="17.5" stroke="#7DCFDE" stroke-width="1" stroke-linecap="round"/>
+  <line x1="19" y1="20"   x2="23" y2="20"   stroke="#7DCFDE" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- Spine: center divider with slight shadow depth -->
+  <line x1="16" y1="9" x2="16" y2="24.5" stroke="#0E7490" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Book bottom shadow/base: a thin bar grounding the book -->
+  <rect x="5" y="23.5" width="22" height="1.5" rx="0.75" fill="#0E7490" opacity="0.5"/>
+</svg>
