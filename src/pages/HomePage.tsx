@@ -4,7 +4,6 @@ import { InfoLegend } from '@/components/info-legend/InfoLegend';
 import { LibraryDetail } from '@/components/library-detail/LibraryDetail';
 import { LibraryList, type SortOption } from '@/components/library-list/LibraryList';
 import { LibrarySummaryCard } from '@/components/library-summary/LibrarySummaryCard';
-import { LocationStatusIndicator } from '@/components/map/LocationStatusIndicator';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useLibraryData } from '@/hooks/useLibraryData';
 import { useVisibilityRefresh } from '@/hooks/useVisibilityRefresh';
@@ -28,7 +27,7 @@ const HomePage = () => {
   const [sortBy, setSortBy] = useState<SortOption>('distance');
   const geolocation = useGeolocation();
   const { libraries, isLoading, isFetching, isError, error } = useLibraryData(
-    geolocation.location ?? undefined
+    geolocation.location
   );
 
   useVisibilityRefresh();
@@ -43,7 +42,6 @@ const HomePage = () => {
     [libraries, detailLibraryId]
   );
   const activeLibraryId = detailLibraryId ?? summaryLibraryId ?? null;
-  const needsLocationPrompt = Boolean(geolocation.error);
 
   const handleMarkerSelect = (libraryId: number) => {
     setSummaryLibraryId(libraryId);
@@ -78,7 +76,7 @@ const HomePage = () => {
           onMapBackgroundClick={handleMapBackgroundClick}
         />
 
-        {(isLoading || geolocation.loading) && (
+        {isLoading && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-white/60">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary/40 border-t-primary" />
           </div>
@@ -89,26 +87,6 @@ const HomePage = () => {
             無法載入座位資訊：{(error as Error)?.message ?? '請稍後再試'}
           </div>
         )}
-
-        {/* 定位錯誤提示 */}
-        {geolocation.error && (
-          <div className="absolute left-1/2 top-20 z-20 flex w-full max-w-md -translate-x-1/2 flex-col items-center gap-3 rounded-2xl bg-[rgba(253,133,58,0.95)] px-4 py-3 text-center text-sm text-white shadow-lg">
-            <p>{geolocation.error}</p>
-            <button
-              type="button"
-              onClick={geolocation.retry}
-              className="rounded-lg bg-white/20 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-white/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-            >
-              重新定位
-            </button>
-          </div>
-        )}
-
-        {/* 定位狀態指示器 */}
-        <LocationStatusIndicator
-          hasLocation={Boolean(geolocation.location)}
-          hasError={Boolean(geolocation.error)}
-        />
 
         <div className="pointer-events-none absolute right-4 top-6 z-30 flex flex-col items-end gap-3 sm:right-6">
           <InfoLegend lastUpdated={lastUpdated} />
@@ -132,8 +110,6 @@ const HomePage = () => {
           onSortChange={handleSortChange}
           onSelectLibrary={handleSelectLibrary}
           isRefreshing={!isLoading && isFetching}
-          showLocationPrompt={needsLocationPrompt}
-          onRequestLocation={geolocation.retry}
         />
       </main>
     </div>

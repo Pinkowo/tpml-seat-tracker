@@ -4,8 +4,6 @@ import clsx from 'clsx';
 import type { LibraryWithSeat } from '@/types/library';
 import { LibraryCard } from './LibraryCard';
 import { SortToggle } from './SortToggle';
-import { LocationPrompt } from './LocationPrompt';
-
 export type SortOption = 'distance' | 'seats';
 
 interface LibraryListProps {
@@ -15,8 +13,6 @@ interface LibraryListProps {
   onSortChange: (value: SortOption) => void;
   onSelectLibrary: (libraryId: number) => void;
   isRefreshing: boolean;
-  showLocationPrompt: boolean;
-  onRequestLocation: () => void;
 }
 
 export const LibraryList = ({
@@ -26,8 +22,6 @@ export const LibraryList = ({
   onSortChange,
   onSelectLibrary,
   isRefreshing,
-  showLocationPrompt,
-  onRequestLocation,
 }: LibraryListProps) => {
   type DrawerState = 'collapsed' | 'expanded';
   const [drawerState, setDrawerState] = useState<DrawerState>('collapsed');
@@ -112,11 +106,6 @@ export const LibraryList = ({
             <div className="border-b border-gray-100 px-4 py-3">
               <SortToggle value={sortBy} onChange={onSortChange} />
             </div>
-            {showLocationPrompt && sortBy === 'distance' && (
-              <div className="px-4 pt-3">
-                <LocationPrompt onRequestPermission={onRequestLocation} />
-              </div>
-            )}
             <div className="flex-1 overflow-y-auto px-4 pb-5 pt-3">
               {isRefreshing && (
                 <div className="mb-3 h-1 rounded-full bg-primary/20">
