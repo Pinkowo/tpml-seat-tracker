@@ -5,7 +5,7 @@ import HomePage from '@/pages/HomePage';
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <ErrorBoundary>
         <Suspense fallback={<div className="flex h-screen items-center justify-center">載入中…</div>}>
           <Routes>
